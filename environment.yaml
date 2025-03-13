@@ -1,11 +1,12 @@
 # environment.yaml
 
-name: test-env
+name: get_data
 channels:
   - conda-forge
 dependencies:
   - python>=3.12
   - anaconda
   - pip
-  # - pip:
-  #   - -r file:requirements.txt
+  - pandas
+  - pip:
+    - GEOparse

@@ -17,8 +17,9 @@ geo_list = get_geo_list(csv_list)
 df = pd.DataFrame()
 first =True
 duplicate_count = {}
-for geo in geo_list:
+for number,geo in enumerate(geo_list):
     try:
+        # time.sleep(5)
         gse = GEOparse.get_GEO(geo=geo, destdir="./data",silent=True)
         print(df)
         print(gse)
@@ -70,6 +71,7 @@ for geo in geo_list:
                     in_df.set_index('ID_REF',inplace = True)
                 df = pd.concat([df, in_df], axis=1)
 
+
                 # df = df.merge(, how='outer', left_index=True, right_index=True)
             except Exception as error:
                 print(error)
@@ -78,6 +80,13 @@ for geo in geo_list:
     except Exception as error:
         print(error)
         print("-----An error occured, probably an empty dataframe")
+        
+    if number %20 == 0 and number != 0:
+        df.to_csv("df_"+str(number)+".csv")
+        df = pd.DataFrame(index=df.index)
+    
+df.to_csv("df_last.csv")
+df = pd.DataFrame(index=df.index)
 
 
 #! For now we ignore GPLs
