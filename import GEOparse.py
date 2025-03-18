@@ -1,20 +1,13 @@
 import GEOparse
 import pandas as pd
 
-def get_geo_list(path:str):
-    read =  pd.read_csv(path)
-    read = read.loc[read['depository_source'] == "GEO"]
-    read = read.loc[read['species'] == "Arabidopsis thaliana"]
-    return list(read["depository_accession"])
-def mapping(x):
-    if type(x) is str:
-        return x.upper()
-    else:
-        return x
-    
-csv_list= "data_addresses.csv"
-geo_list = get_geo_list(csv_list)
-df = pd.DataFrame()
+from helpers import get_geo_list, mapping
+
+
+
+geo_list = get_geo_list("data_addresses.csv")
+df = pd.read_csv("genes_list.csv", index_col=0)
+df_index = pd.read_csv("genes_list.csv", index_col=0)
 first =True
 duplicate_count = {}
 for number,geo in enumerate(geo_list):
@@ -69,10 +62,11 @@ for number,geo in enumerate(geo_list):
             try:
                 if in_df.index.name != 'ID_REF':
                     in_df.set_index('ID_REF',inplace = True)
-                df = pd.concat([df, in_df], axis=1)
-
-
-                # df = df.merge(, how='outer', left_index=True, right_index=True)
+                # Fill in all the nans
+                complete_in = pd.concat([df_index, in_df], axis=1)
+                complete_in = complete_in.transform(lambda x: x.fillna(x.mean()))
+                df = pd.concat([df, complete_in], axis=1)
+                x = 0
             except Exception as error:
                 print(error)
                 pass
@@ -81,11 +75,11 @@ for number,geo in enumerate(geo_list):
         print(error)
         print("-----An error occured, probably an empty dataframe")
         
-    if number %20 == 0 and number != 0:
-        df.to_csv("df_"+str(number)+".csv")
+    if number %10 == 0 and number != 0:
+        df.to_csv("df_no_nan_/df_"+str(number)+".csv")
         df = pd.DataFrame(index=df.index)
     
-df.to_csv("df_last.csv")
+df.to_csv("df_no_nan_/df_last.csv")
 df = pd.DataFrame(index=df.index)
 
 
