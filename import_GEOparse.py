@@ -76,10 +76,10 @@ for number,geo in enumerate(geo_list):
         print("-----An error occured, probably an empty dataframe")
         
     if number %10 == 0 and number != 0:
-        df.to_csv("df_no_nan_/df_"+str(number)+".csv")
+        df.to_csv("df_no_nan/df_"+str(number)+".csv")
         df = pd.DataFrame(index=df.index)
     
-df.to_csv("df_no_nan_/df_last.csv")
+df.to_csv("df_no_nan/df_last.csv")
 df = pd.DataFrame(index=df.index)
 
 
