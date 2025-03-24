@@ -10,12 +10,15 @@ df = pd.read_csv("genes_list.csv", index_col=0)
 df_index = pd.read_csv("genes_list.csv", index_col=0)
 first =True
 duplicate_count = {}
+
+
 for number,geo in enumerate(geo_list):
     try:
         # time.sleep(5)
-        gse = GEOparse.get_GEO(geo=geo, destdir="./data",silent=True)
+        gse = GEOparse.get_GEO(geo=geo, destdir="/tudelft.net/staff-umbrella/AT GE Datasets/data",silent=True)
         print(df)
         print(gse)
+        gse.metadata['type']
 
         key = list(gse.gpls)
         key = key[0]
@@ -76,7 +79,7 @@ for number,geo in enumerate(geo_list):
         print("-----An error occured, probably an empty dataframe")
         
     if number %10 == 0 and number != 0:
-        df.to_csv("df_no_nan/df_"+str(number)+".csv")
+        df.to_csv("test_df/df_"+str(number)+".csv")
         df = pd.DataFrame(index=df.index)
     
 df.to_csv("df_no_nan/df_last.csv")

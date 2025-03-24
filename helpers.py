@@ -1,9 +1,11 @@
 
 import pandas as pd
-
+import numpy as np
 import networkx as nx
 import community
 import matplotlib.pyplot as plt
+import umap
+from sklearn.preprocessing import StandardScaler
 
 def get_geo_list(path:str):
     read =  pd.read_csv(path)
@@ -69,3 +71,31 @@ def louvain_clustering(similarity_matrix, threshold=0.8):
     clusters = list(clusters.values())
 
     return clusters
+
+def get_Umap(matrix:np.array):
+    # UMAP plotting
+    reducer = umap.UMAP()
+    scaled_data = StandardScaler().fit_transform(matrix)
+    embedding = reducer.fit_transform(scaled_data)
+
+    plt.scatter(
+        embedding[:, 0],
+        embedding[:, 1]
+        )
+    plt.gca().set_aspect('equal', 'datalim')
+    plt.title('UMAP projection of the dataset', fontsize=24)
+    plt.savefig("umap_no_nan.svg")
+
+def normalize(arr, t_min, t_max):
+    norm_arr = []
+    diff = t_max - t_min
+    diff_arr = max(arr) - min(arr)    
+    for i in arr:
+        temp = (((i - min(arr))*diff)/diff_arr) + t_min
+        norm_arr.append(temp)
+    return norm_arr
+
+def normalize_2d(matrix):
+    norm = np.linalg.norm(matrix)
+    matrix = matrix/norm  # normalized matrix
+    return matrix

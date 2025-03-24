@@ -3,11 +3,12 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-from helpers import get_first_indexs,louvain_clustering
+from helpers import get_first_indexs,louvain_clustering,get_Umap, normalize_2d
 
 from sklearn.metrics.pairwise import cosine_similarity
 
-plot_nan = False
+
+plot_nan = True
 
 # Get CSV files list from a folder
 path = 'df_no_nan'
@@ -41,12 +42,9 @@ if plot_nan:
 
     matrix = big_df.to_numpy()
     
-
     plt.imshow(matrix_nan, cmap='hot', interpolation='nearest')
     plt.savefig('figures/matrix.svg')
     plt.close()
-
-
     
     for i,c in enumerate(indices):
         min = indices[i]
@@ -56,14 +54,22 @@ if plot_nan:
             max = len(matrix)
         plt.bar(range(len(row_nan_count.index[min:max])),row_nan_count.values[min:max])
         plt.ylim(0,1850)
-        plt.savefig('figures/row/row_dis'+chromosomes[i]+'.svg')
+        plt.xlabel("Genes")
+        plt.ylabel("Missing number of data points")
+        plt.savefig('figures/row/0.row_dis'+chromosomes[i]+'.svg')
         plt.close()
 
-        plt.bar(range(len(col_nan_count.index[min:max])),col_nan_count.values[min:max])
-        plt.savefig('figures/col/col_dis'+chromosomes[i]+'.svg')
-        plt.close()
+    plt.bar(range(len(col_nan_count.index)),col_nan_count.values)
+    plt.xlabel("Experiments")
+    plt.ylabel("Missing number of data points")
+    plt.savefig('figures/col/0.col_dis.svg')
+    plt.close()
 
 np.nan_to_num(matrix,copy=False)
+
+matrix = normalize_2d(matrix)
+
+# # Plotting UMAP
 for i,c in enumerate(indices):
     min = indices[i]
     try:
@@ -76,31 +82,19 @@ for i,c in enumerate(indices):
     print("starting plot")
     plt.imshow(similarity_matrix, cmap='hot', interpolation='nearest')
     plt.colorbar()
-    plt.savefig('figures/sim_matrix/2_avg_sim_'+str(chromosomes[i])+'_matrix.svg')
+    plt.savefig('figures/sim_matrix/norm_nan_avg_sim_'+str(chromosomes[i])+'_matrix.svg')
     plt.close()
     print("finished plot")
 
-    louvain_clustering(similarity_matrix)
-
+    # louvain_clustering(similarity_matrix)
+get_Umap(matrix)
 
 print("Done")
 
 
 
 
-# def get_Umap(matrix:np.array):
-#     # UMAP plotting
-#     reducer = umap.UMAP()
-#     scaled_penguin_data = StandardScaler().fit_transform(matrix)
-#     embedding = reducer.fit_transform(scaled_penguin_data)
 
-#     plt.scatter(
-#         embedding[:, 0],
-#         embedding[:, 1]
-#         )
-#     plt.gca().set_aspect('equal', 'datalim')
-#     plt.title('UMAP projection of the dataset', fontsize=24)
-#     plt.savefig("umap.svg")
 
 # get pair wise similar
 
