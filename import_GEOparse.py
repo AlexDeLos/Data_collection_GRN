@@ -80,10 +80,10 @@ for number,geo in enumerate(geo_list):
         print("-----An error occured, probably an empty dataframe")
         
     if number %10 == 0 and number != 0:
-        df.to_csv("test_df/df_"+str(number)+".csv")
+        df.to_csv("/tudelft.net/staff-umbrella/AT GE Datasets/df/df_"+str(number)+".csv")
         df = pd.DataFrame(index=df.index)
     
-df.to_csv("df_no_nan/df_last.csv")
+df.to_csv("/tudelft.net/staff-umbrella/AT GE Datasets/df/df_last.csv")
 df = pd.DataFrame(index=df.index)
 
 
