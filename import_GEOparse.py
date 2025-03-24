@@ -13,6 +13,7 @@ duplicate_count = {}
 
 
 for number,geo in enumerate(geo_list):
+    print('stating ', number, geo)
     try:
         # time.sleep(5)
         gse = GEOparse.get_GEO(geo=geo, destdir="/tudelft.net/staff-umbrella/AT GE Datasets/data",silent=True)
