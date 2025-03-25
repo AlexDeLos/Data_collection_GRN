@@ -97,12 +97,17 @@ np.nan_to_num(matrix,copy=False)
 matrix = normalize_2d(matrix)
 
 plot_sim_matrix(matrix,indices,chromosomes)
+print("plotting UMAP")
 get_Umap(matrix)
 
+print("KNN impute")
 df_impute = apply_KNN_impute(big_df,2)
+df_impute.to_csv(path+"/imputed.csv")
 # get the UMAP
 
+print("plotting sim matrix, impute")
 plot_sim_matrix(df_impute.to_numpy(),indices,chromosomes,"impute")
+print("plotting UMAP, impute")
 get_Umap(df_impute.to_numpy(),"impute")
 
 print("Done")
