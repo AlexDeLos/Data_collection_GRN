@@ -12,49 +12,51 @@ plot_nan = True
 
 # Get CSV files list from a folder
 path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_nan'
-# path = 'df'
-csv_files = glob.glob(path + "/*.csv")
 
-# Read each CSV file into DataFrame
-# This creates a list of dataframes
-df_list = (pd.read_csv(file, index_col=0) for file in csv_files)
+try:
+    filtered_df = pd.read_csv(path+'/filter.csv')
+except:
+    csv_files = glob.glob(path + "/*.csv")
 
-# Concatenate all DataFrames
-big_df = pd.concat(df_list, axis=1)
-big_df = big_df.dropna(axis=1, how='all')
+    # Read each CSV file into DataFrame
+    # This creates a list of dataframes
+    df_list = (pd.read_csv(file, index_col=0) for file in csv_files)
 
-#! Some duplicates have been created
-big_df = big_df.loc[:,~big_df.columns.duplicated()].copy()
-big_df.sort_index(inplace=True)
+    # Concatenate all DataFrames
+    big_df = pd.concat(df_list, axis=1)
+    big_df = big_df.dropna(axis=1, how='all')
 
-big_df.to_csv(path+'/complete.csv')
+    #! Some duplicates have been created
+    big_df = big_df.loc[:,~big_df.columns.duplicated()].copy()
+    big_df.sort_index(inplace=True)
 
-
-# filter the data on 20%
-# Calculate the percentage of NaN values in each column
-nan_percentage = big_df.isna().mean() * 100
-
-# Filter columns where NaN percentage <= 20%
-filtered_columns = nan_percentage[nan_percentage <= 20].index
-
-# Keep only the filtered columns
-filtered_df = big_df[filtered_columns]
+    big_df.to_csv(path+'/complete.csv')
 
 
-nan_percentage_rows = filtered_df.isna().mean(axis=1) * 100
+    # filter the data on 20%
+    # Calculate the percentage of NaN values in each column
+    nan_percentage = big_df.isna().mean() * 100
 
-# Filter rows where NaN percentage <= 20%
-filtered_rows = nan_percentage_rows[nan_percentage_rows <= 20].index
+    # Filter columns where NaN percentage <= 20%
+    filtered_columns = nan_percentage[nan_percentage <= 20].index
 
-# Keep only the filtered rows
-filtered_df = filtered_df.loc[filtered_rows]
+    # Keep only the filtered columns
+    filtered_df = big_df[filtered_columns]
 
 
-filtered_df.to_csv(path+'/filter.csv')
+    nan_percentage_rows = filtered_df.isna().mean(axis=1) * 100
+
+    # Filter rows where NaN percentage <= 20%
+    filtered_rows = nan_percentage_rows[nan_percentage_rows <= 20].index
+
+    # Keep only the filtered rows
+    filtered_df = filtered_df.loc[filtered_rows]
+
+
+    filtered_df.to_csv(path+'/filter.csv')
+
 
 big_df = filtered_df
-
-
 
 matrix = big_df.to_numpy()
 matrix_nan = big_df.isna().to_numpy()
