@@ -24,3 +24,4 @@ conda activate alex_env
 
 echo "Starting data importing"
 python3 import_GEOparse.py
+echo "---DONE"
