@@ -2,7 +2,7 @@
 
 #SBATCH --partition=general
 
-#SBATCH --qos=long
+#SBATCH --qos=medium
 
 #SBATCH --mail-type=END
 
@@ -12,7 +12,7 @@
 
 #SBATCH --cpus-per-task=1
 
-#SBATCH --mem=8384
+#SBATCH --mem=16G
 
 #SBATCH --gres=gpu
 
