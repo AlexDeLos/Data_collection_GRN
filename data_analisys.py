@@ -3,12 +3,11 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-from helpers import get_first_indexs,louvain_clustering,get_Umap, normalize_2d
-
-from sklearn.metrics.pairwise import cosine_similarity
+from helpers import get_first_indexs,plot_sim_matrix,get_Umap, normalize_2d,apply_KNN_impute
 
 
-plot_nan = True
+
+plot_nan = False
 
 # Get CSV files list from a folder
 path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_nan'
@@ -68,8 +67,6 @@ if plot_nan:
     row_nan_count = big_df.isna().sum(axis=1)
     filter_row = big_df.isna().sum(axis=1)>1000
     col_nan_count = big_df.isna().sum(axis=0)
-
-    matrix = big_df.to_numpy()
     
     plt.imshow(matrix_nan, cmap='hot', interpolation='nearest')
     plt.savefig('figures/matrix.svg')
@@ -98,25 +95,14 @@ np.nan_to_num(matrix,copy=False)
 
 matrix = normalize_2d(matrix)
 
-# # Plotting UMAP
-for i,c in enumerate(indices):
-    min = indices[i]
-    try:
-        max = indices[i+1]
-    except:
-        max = len(matrix)
-    print("starting similarity")
-    # Step 1: Compute pairwise cosine similarity
-    similarity_matrix = cosine_similarity(matrix[min:max])
-    print("starting plot")
-    plt.imshow(similarity_matrix, cmap='hot', interpolation='nearest')
-    plt.colorbar()
-    plt.savefig('figures/sim_matrix/norm_nan_avg_sim_'+str(chromosomes[i])+'_matrix.svg')
-    plt.close()
-    print("finished plot")
-
-    # louvain_clustering(similarity_matrix)
+plot_sim_matrix(matrix,indices,chromosomes)
 get_Umap(matrix)
+
+df_impute = apply_KNN_impute(big_df,2)
+# get the UMAP
+
+plot_sim_matrix(df_impute.to_numpy(),indices,chromosomes,"impute")
+get_Umap(df_impute.to_numpy(),"impute")
 
 print("Done")
 
