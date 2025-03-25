@@ -27,7 +27,7 @@ big_df = big_df.dropna(axis=1, how='all')
 big_df = big_df.loc[:,~big_df.columns.duplicated()].copy()
 big_df.sort_index(inplace=True)
 
-big_df.to_csv(path+'_complete.csv')
+big_df.to_csv(path+'/complete.csv')
 
 
 # filter the data on 20%
@@ -50,7 +50,7 @@ filtered_rows = nan_percentage_rows[nan_percentage_rows <= 20].index
 filtered_df = filtered_df.loc[filtered_rows]
 
 
-filtered_df.to_csv(path+'_filter.csv')
+filtered_df.to_csv(path+'/filter.csv')
 
 big_df = filtered_df
 
@@ -59,7 +59,7 @@ big_df = filtered_df
 matrix = big_df.to_numpy()
 matrix_nan = big_df.isna().to_numpy()
 
-chromosomes = ["1",'2','3','4','5','C','M']
+chromosomes = ["1",'2','3','4','5']
 indices:list[int] = get_first_indexs(big_df.index,chromosomes)
 
 if plot_nan:
