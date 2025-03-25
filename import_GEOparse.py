@@ -68,7 +68,7 @@ for number,geo in enumerate(geo_list):
                     in_df.set_index('ID_REF',inplace = True)
                 # Fill in all the nans
                 complete_in = pd.concat([df_index, in_df], axis=1)
-                complete_in = complete_in.transform(lambda x: x.fillna(x.mean()))
+                # complete_in = complete_in.transform(lambda x: x.fillna(x.mean()))
                 df = pd.concat([df, complete_in], axis=1)
                 x = 0
             except Exception as error:
@@ -80,10 +80,10 @@ for number,geo in enumerate(geo_list):
         print("-----An error occured, probably an empty dataframe")
         
     if number %10 == 0 and number != 0:
-        df.to_csv("/tudelft.net/staff-umbrella/AT GE Datasets/df/df_"+str(number)+".csv")
+        df.to_csv("/tudelft.net/staff-umbrella/AT GE Datasets/df_nan/df_"+str(number)+".csv")
         df = pd.DataFrame(index=df.index)
     
-df.to_csv("/tudelft.net/staff-umbrella/AT GE Datasets/df/df_last.csv")
+df.to_csv("/tudelft.net/staff-umbrella/AT GE Datasets/df_nan/df_last.csv")
 df = pd.DataFrame(index=df.index)
 
 
