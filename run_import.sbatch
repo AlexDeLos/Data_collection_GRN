@@ -23,4 +23,4 @@ module load miniconda/3.9
 conda activate alex_env
 
 echo "Starting data importing"
-python3 experiments/cifar/train_conv.py
+python3 import_GEOparse.py
