@@ -93,6 +93,7 @@ if plot_nan:
 
 np.nan_to_num(matrix,copy=False)
 
+#! Normalize data
 matrix = normalize_2d(matrix)
 
 plot_sim_matrix(matrix,indices,chromosomes)

@@ -20,14 +20,13 @@ def mapping(x):
     else:
         return x
     
-def predicate(str:str, chromosome:str)-> bool:
-
-    return "AT"+chromosome+"G" in str
+def predicate(gene:str, chromosome:str)-> bool:
+    return ("AT"+chromosome+"G") in gene
 
 def get_first_indexs(df_index,chromo:list[str]):
     array = []
     for i in chromo:
-        gene:str = next(filter(lambda x : predicate(x,i), df_index))
+        gene:str = next(filter(lambda x : predicate(x,str(i)), df_index))
         array.append(df_index.get_loc(gene))
     return array
 
