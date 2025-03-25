@@ -11,7 +11,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 plot_nan = True
 
 # Get CSV files list from a folder
-path = '/tudelft.net/staff-umbrella/AT GE Datasets/df'
+path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_nan'
 # path = 'df'
 csv_files = glob.glob(path + "/*.csv")
 
