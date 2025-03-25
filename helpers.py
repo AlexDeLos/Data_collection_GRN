@@ -21,7 +21,7 @@ def mapping(x):
         return x
     
 def predicate(gene:str, chromosome:str)-> bool:
-    return ("AT"+chromosome+"G") in gene
+    return str("AT"+chromosome+"G") in gene
 
 def get_first_indexs(df_index,chromo:list[str]):
     array = []

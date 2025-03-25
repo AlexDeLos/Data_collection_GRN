@@ -11,9 +11,10 @@ plot_nan = False
 
 # Get CSV files list from a folder
 path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_nan'
+path = 'df'
 
 try:
-    filtered_df = pd.read_csv(path+'/filter.csv')
+    filtered_df = pd.read_csv(path+'/filter.csv', index_col=0)
 except:
     csv_files = glob.glob(path + "/*.csv")
 
