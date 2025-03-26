@@ -109,9 +109,9 @@ df_impute.to_csv(path+"/imputed.csv")
 # get the UMAP
 
 print("plotting sim matrix, impute")
-plot_sim_matrix(df_impute.to_numpy(),indices,chromosomes,"impute",save_loc=out_path)
+plot_sim_matrix(df_impute.to_numpy(),indices,chromosomes,"_impute",save_loc=out_path)
 print("plotting UMAP, impute")
-get_Umap(df_impute.to_numpy(),"impute",save_loc=out_path)
+get_Umap(df_impute.to_numpy(),"_impute",save_loc=out_path)
 
 print("Done")
 
