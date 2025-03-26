@@ -101,7 +101,7 @@ def normalize_2d(matrix):
     matrix = matrix/norm  # normalized matrix
     return matrix
 
-def plot_sim_matrix(matrix:np.array,indices:list,chromosomes:list, name:str = ''):
+def plot_sim_matrix(matrix:np.array,indices:list,chromosomes:list, name:str = '', save_loc: str = ''):
     # Plotting similarity matrix
     for i,c in enumerate(indices):
         print("plottin sim matrix", i)
@@ -116,7 +116,7 @@ def plot_sim_matrix(matrix:np.array,indices:list,chromosomes:list, name:str = ''
         print("starting plot")
         plt.imshow(similarity_matrix, cmap='hot', interpolation='nearest')
         plt.colorbar()
-        plt.savefig('figures/sim_matrix/sim_'+str(chromosomes[i])+'_matrix'+name+'.svg')
+        plt.savefig(save_loc+'/sim_matrix/sim_'+str(chromosomes[i])+'_matrix'+name+'.svg')
         plt.close()
         print("finished plot")
 
@@ -124,11 +124,11 @@ def plot_sim_matrix(matrix:np.array,indices:list,chromosomes:list, name:str = ''
 
     similarity_matrix = cosine_similarity(matrix)
     print("saving similarity_matrix")
-    np.save("figures/sim_matrix/sim_matrix.pny",similarity_matrix)
+    np.save(save_loc+"sim_matrix.pny",similarity_matrix)
     print("starting final plot")
     plt.imshow(similarity_matrix, cmap='hot', interpolation='none')
     plt.colorbar()
-    plt.savefig('figures/sim_matrix/sim_matrix'+name+'.svg')
+    plt.savefig(save_loc+'/sim_matrix/sim_matrix'+name+'.svg')
     plt.close()
     print("done with final sim plot")
 

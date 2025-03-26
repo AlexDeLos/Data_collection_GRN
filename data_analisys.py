@@ -11,7 +11,7 @@ plot_nan = True
 
 # Get CSV files list from a folder
 path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_nan'
-
+out_path = "/tudelft.net/staff-umbrella/AT GE Datasets/figures"
 try:
     filtered_df = pd.read_csv(path+'/filter.csv', index_col=0)
     print("succesfully loaded data")
@@ -83,21 +83,23 @@ if plot_nan:
         plt.ylim(0,1850)
         plt.xlabel("Genes")
         plt.ylabel("Missing number of data points")
-        plt.savefig('figures/row/0.row_dis'+chromosomes[i]+'.svg')
+        plt.savefig(out_path+'/row/0.row_dis'+chromosomes[i]+'.svg')
         plt.close()
 
     plt.bar(range(len(col_nan_count.index)),col_nan_count.values)
     plt.xlabel("Experiments")
     plt.ylabel("Missing number of data points")
-    plt.savefig('figures/col/0.col_dis.svg')
+    plt.savefig(out_path+'/col/0.col_dis.svg')
     plt.close()
+
 print("plotted Nans", plot_nan)
 np.nan_to_num(matrix,copy=False)
 print("nans filled with 0")
+
 #! Normalize data
 matrix = normalize_2d(matrix)
 print("Normalized matrix")
-plot_sim_matrix(matrix,indices,chromosomes)
+plot_sim_matrix(matrix,indices,chromosomes, save_loc=out_path)
 print("plotting UMAP")
 get_Umap(matrix)
 
@@ -107,7 +109,7 @@ df_impute.to_csv(path+"/imputed.csv")
 # get the UMAP
 
 print("plotting sim matrix, impute")
-plot_sim_matrix(df_impute.to_numpy(),indices,chromosomes,"impute")
+plot_sim_matrix(df_impute.to_numpy(),indices,chromosomes,"impute",save_loc=out_path)
 print("plotting UMAP, impute")
 get_Umap(df_impute.to_numpy(),"impute")
 
