@@ -73,7 +73,7 @@ def louvain_clustering(similarity_matrix, threshold=0.8):
 
     return clusters
 
-def get_Umap(matrix:np.array, name:str = ''):
+def get_Umap(matrix:np.array, name:str = '',save_loc: str = ''):
     # UMAP plotting
     reducer = umap.UMAP()
     scaled_data = StandardScaler().fit_transform(matrix)
@@ -85,7 +85,7 @@ def get_Umap(matrix:np.array, name:str = ''):
         )
     plt.gca().set_aspect('equal', 'datalim')
     plt.title('UMAP projection of the dataset', fontsize=24)
-    plt.savefig("figures/umap"+name+".svg")
+    plt.savefig(save_loc+"/umap"+name+".svg")
 
 def normalize(arr, t_min, t_max):
     norm_arr = []

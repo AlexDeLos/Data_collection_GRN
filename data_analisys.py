@@ -101,7 +101,7 @@ matrix = normalize_2d(matrix)
 print("Normalized matrix")
 plot_sim_matrix(matrix,indices,chromosomes, save_loc=out_path)
 print("plotting UMAP")
-get_Umap(matrix)
+get_Umap(matrix,save_loc=out_path)
 
 print("KNN impute")
 df_impute = apply_KNN_impute(big_df,2)
@@ -111,7 +111,7 @@ df_impute.to_csv(path+"/imputed.csv")
 print("plotting sim matrix, impute")
 plot_sim_matrix(df_impute.to_numpy(),indices,chromosomes,"impute",save_loc=out_path)
 print("plotting UMAP, impute")
-get_Umap(df_impute.to_numpy(),"impute")
+get_Umap(df_impute.to_numpy(),"impute",save_loc=out_path)
 
 print("Done")
 
