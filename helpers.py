@@ -123,11 +123,14 @@ def plot_sim_matrix(matrix:np.array,indices:list,chromosomes:list, name:str = ''
         # louvain_clustering(similarity_matrix)
 
     similarity_matrix = cosine_similarity(matrix)
-    print("starting plot")
-    plt.imshow(similarity_matrix, cmap='hot', interpolation='nearest')
+    print("saving similarity_matrix")
+    np.save("figures/sim_matrix/sim_matrix.pny",similarity_matrix)
+    print("starting final plot")
+    plt.imshow(similarity_matrix, cmap='hot', interpolation='none')
     plt.colorbar()
     plt.savefig('figures/sim_matrix/sim_matrix'+name+'.svg')
     plt.close()
+    print("done with final sim plot")
 
 def apply_KNN_impute(df:pd.DataFrame,n_neighbors: int):
     imputer = KNNImputer(n_neighbors=n_neighbors)
