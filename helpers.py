@@ -126,10 +126,10 @@ def plot_sim_matrix(matrix:np.array,indices:list,chromosomes:list, name:str = ''
     print("saving similarity_matrix")
     np.save(save_loc+"sim_matrix.pny",similarity_matrix)
     print("starting final plot")
-    plt.imshow(similarity_matrix, cmap='hot', interpolation='none')
-    plt.colorbar()
-    plt.savefig(save_loc+'/sim_matrix/sim_matrix'+name+'.svg')
-    plt.close()
+    # plt.imshow(similarity_matrix, cmap='hot', interpolation='none')
+    # plt.colorbar()
+    # plt.savefig(save_loc+'/sim_matrix/sim_matrix'+name+'.svg')
+    # plt.close()
     print("done with final sim plot")
 
 def apply_KNN_impute(df:pd.DataFrame,n_neighbors: int):
