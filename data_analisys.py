@@ -7,13 +7,14 @@ from helpers import get_first_indexs,plot_sim_matrix,get_Umap, normalize_2d,appl
 
 
 
-plot_nan = False
+plot_nan = True
 
 # Get CSV files list from a folder
 path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_nan'
 
 try:
     filtered_df = pd.read_csv(path+'/filter.csv', index_col=0)
+    print("succesfully loaded data")
 except:
     csv_files = glob.glob(path + "/*.csv")
 
