@@ -104,6 +104,7 @@ def normalize_2d(matrix):
 def plot_sim_matrix(matrix:np.array,indices:list,chromosomes:list, name:str = ''):
     # Plotting similarity matrix
     for i,c in enumerate(indices):
+        print("plottin sim matrix", i)
         min = indices[i]
         try:
             max = indices[i+1]

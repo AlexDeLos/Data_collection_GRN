@@ -54,7 +54,7 @@ except:
 
     filtered_df.to_csv(path+'/filter.csv')
 
-
+print("data loaded")
 big_df = filtered_df
 
 matrix = big_df.to_numpy()
@@ -90,12 +90,12 @@ if plot_nan:
     plt.ylabel("Missing number of data points")
     plt.savefig('figures/col/0.col_dis.svg')
     plt.close()
-
+print("plotted Nans", plot_nan)
 np.nan_to_num(matrix,copy=False)
-
+print("nans filled with 0")
 #! Normalize data
 matrix = normalize_2d(matrix)
-
+print("Normalized matrix")
 plot_sim_matrix(matrix,indices,chromosomes)
 print("plotting UMAP")
 get_Umap(matrix)
