@@ -3,11 +3,15 @@ import pandas as pd
 
 from helpers import get_geo_list, mapping
 
+path = '/tudelft.net/staff-umbrella/AT GE Datasets/'
+
+store = 'df_nan/'
 
 
-geo_list = get_geo_list("data_addresses.csv")
-df = pd.read_csv("genes_list.csv", index_col=0)
-df_index = pd.read_csv("genes_list.csv", index_col=0)
+path = ''
+geo_list = get_geo_list('data_addresses.csv')
+df = pd.read_csv('genes_list.csv', index_col=0)
+df_index = pd.read_csv('genes_list.csv', index_col=0)
 first =True
 duplicate_count = {}
 
@@ -16,37 +20,34 @@ for number,geo in enumerate(geo_list):
     print('stating ', number, geo)
     try:
         # time.sleep(5)
-        gse = GEOparse.get_GEO(geo=geo, destdir="/tudelft.net/staff-umbrella/AT GE Datasets/data_",silent=True)
-        print(df)
-        print(gse)
-        gse.metadata['type']
+        gse = GEOparse.get_GEO(geo=geo, destdir=path + 'data_',silent=True)
 
         key = list(gse.gpls)
         key = key[0]
         gpl_table=gse.gpls[key].table
         try:
-            probe_to_gene_map = dict(zip(gpl_table["ID"], gpl_table["ORF"].map(mapping)))
+            probe_to_gene_map = dict(zip(gpl_table['ID'], gpl_table['ORF'].map(mapping)))
         except Exception as error:
-            print("---- ERROR MAKING MAP ----")
+            print('---- ERROR MAKING MAP ----')
             print(error)
             continue
         for gsm_name, gsm in gse.gsms.items():
-            print("Name: ", gsm_name)
-            print ("Table data:",)
+            print('Name: ', gsm_name)
+            print ('Table data:',)
             print (gsm.table.head())
             in_df = gsm.table
             in_df['ID_REF'] = in_df['ID_REF'].map(probe_to_gene_map)
             # How to drop the numbers
             in_df = in_df.dropna()
-
-            in_df.rename(columns={'VALUE': gsm_name}, inplace=True)
+            gsm_id = gsm_name+'_'+str(number)
+            in_df.rename(columns={'VALUE': gsm_id}, inplace=True)
             in_df.set_index('ID_REF',inplace = True)
             # we take only the arabidopsis thaliana genges
             in_df.drop(in_df[~in_df.index.str.match(r'^At[1-5MC]g\d{5}$', case=False)].index, inplace=True) # we take only the a
-            in_df = in_df.filter([gsm_name])
+            in_df = in_df.filter([gsm_id])
 
             if df.index.duplicated().any():
-                print("Duplicates in df:", df[df.index.duplicated(keep=False)])
+                print('Duplicates in df:', df[df.index.duplicated(keep=False)])
 
                 # Create a dictionary to keep track of the count of duplicates
                 duplicate_count = df.index.value_counts().to_dict()
@@ -55,7 +56,7 @@ for number,geo in enumerate(geo_list):
                 df = df.groupby('ID_REF')[in_df.columns[0]].mean().reset_index() # assuming there 
 
             if in_df.index.duplicated().any():
-                print("Duplicates in df:", in_df[in_df.index.duplicated(keep=False)])
+                print('Duplicates in df:', in_df[in_df.index.duplicated(keep=False)])
 
                 # Create a dictionary to keep track of the count of duplicates
                 duplicate_count = in_df.index.value_counts().to_dict()
@@ -77,24 +78,24 @@ for number,geo in enumerate(geo_list):
             
     except Exception as error:
         print(error)
-        print("-----An error occured, probably an empty dataframe")
+        print('-----An error occured, probably an empty dataframe')
         
     if number %10 == 0 and number != 0:
-        df.to_csv("/tudelft.net/staff-umbrella/AT GE Datasets/df_nan/df_"+str(number)+".csv")
+        df.to_csv(path + store +'df_'+str(number)+'.csv')
         df = pd.DataFrame(index=df.index)
     
-df.to_csv("/tudelft.net/staff-umbrella/AT GE Datasets/df_nan/df_last.csv")
+df.to_csv(path + store +'df_last.csv')
 df = pd.DataFrame(index=df.index)
 
 
 #! For now we ignore GPLs
 # print()
-# print("GPL example:")
+# print('GPL example:')
 # for gpl_name, gpl in gse.gpls.items():
-#     print("Name: ", gpl_name)
-#     print("Metadata:",)
+#     print('Name: ', gpl_name)
+#     print('Metadata:',)
 #     for key, value in gpl.metadata.items():
-#         print(" - %s : %s" % (key, ", ".join(value)))
-#     print("Table data:",)
+#         print(' - %s : %s' % (key, ', '.join(value)))
+#     print('Table data:',)
 #     print(gpl.table.head())
 #     break
