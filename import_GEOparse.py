@@ -7,8 +7,6 @@ path = '/tudelft.net/staff-umbrella/AT GE Datasets/'
 
 store = 'df_nan/'
 
-
-path = ''
 geo_list = get_geo_list('data_addresses.csv')
 df = pd.read_csv('genes_list.csv', index_col=0)
 df_index = pd.read_csv('genes_list.csv', index_col=0)
