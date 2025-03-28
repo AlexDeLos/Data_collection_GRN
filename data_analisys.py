@@ -13,7 +13,7 @@ plot_nan = True
 path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_nan'
 out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/figures'
 try:
-    filtered_df = pd.read_csv(path+'/filter.csv', index_col=0)
+    filtered_df = pd.read_csv(path+'/filter_.csv', index_col=0)
     print('succesfully loaded data')
 except:
     csv_files = glob.glob(path + '/*.csv')
@@ -50,10 +50,6 @@ except:
 
     # Keep only the filtered columns
     filtered_df = filtered_genes[filtered_columns]
-
-
-
-
 
     filtered_df.to_csv(path+'/filter.csv')
 
