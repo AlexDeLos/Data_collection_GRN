@@ -7,7 +7,7 @@ from helpers import get_first_indexs,plot_sim_matrix,get_Umap, normalize_2d,appl
 
 
 
-plot_nan = False
+plot_nan = True
 
 # Get CSV files list from a folder
 path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_nan'
@@ -59,7 +59,7 @@ except:
 
 print('data loaded')
 big_df = filtered_df
-
+print(big_df.head)
 matrix = big_df.to_numpy()
 matrix_nan = big_df.isna().to_numpy()
 
