@@ -10,11 +10,11 @@ from helpers import get_first_indexs,plot_sim_matrix,get_Umap, normalize_2d,appl
 plot_nan = True
 
 # Get CSV files list from a folder
-# path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_nan'
-# out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/figures'
+path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_nan'
+out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/figures'
 
-path = 'df'
-out_path = 'figures'
+# path = 'df'
+# out_path = 'figures'
 try:
     filtered_df = pd.read_csv(path+'/filter.csv', index_col=0)
     print('succesfully loaded data')
