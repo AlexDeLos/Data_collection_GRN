@@ -60,6 +60,7 @@ except:
 print('data loaded')
 big_df = filtered_df
 print(big_df.head)
+
 matrix = big_df.to_numpy()
 matrix_nan = big_df.isna().to_numpy()
 
@@ -72,7 +73,7 @@ if plot_nan:
     col_nan_count = big_df.isna().sum(axis=0)
     
     plt.imshow(matrix_nan, cmap='hot', interpolation='nearest')
-    plt.savefig('figures/matrix.svg')
+    plt.savefig(out_path+'/matrix.svg')
     plt.close()
     
     for i,c in enumerate(indices):
