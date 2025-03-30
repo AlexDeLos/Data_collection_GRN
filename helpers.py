@@ -8,12 +8,14 @@ import umap
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.impute import KNNImputer
+import matplotlib.cm as cm
+from scipy.cluster.hierarchy import dendrogram, linkage
 
 def get_geo_list(path:str):
     read =  pd.read_csv(path)
-    read = read.loc[read['depository_source'] == "GEO"]
-    read = read.loc[read['species'] == "Arabidopsis thaliana"]
-    return list(read["depository_accession"])
+    read = read.loc[read['depository_source'] == 'GEO']
+    read = read.loc[read['species'] == 'Arabidopsis thaliana']
+    return list(read['depository_accession'])
 def mapping(x):
     if type(x) is str:
         return x.upper()
@@ -21,7 +23,7 @@ def mapping(x):
         return x
     
 def predicate(gene:str, chromosome:str)-> bool:
-    return str("AT"+chromosome+"G") in gene
+    return str('AT'+chromosome+'G') in gene
 
 def get_first_indexs(df_index,chromo:list[str]):
     array = []
@@ -32,7 +34,7 @@ def get_first_indexs(df_index,chromo:list[str]):
 
 
 def louvain_clustering(similarity_matrix, threshold=0.8):
-    """
+    '''
     Cluster high-dimensional vectors using Louvain clustering.
 
     Parameters:
@@ -41,7 +43,7 @@ def louvain_clustering(similarity_matrix, threshold=0.8):
 
     Returns:
     list: A list of clusters, where each cluster is a list of indices of similar vectors.
-    """
+    '''
 
 
     # Step 2: Create a graph from the similarity matrix
@@ -73,19 +75,27 @@ def louvain_clustering(similarity_matrix, threshold=0.8):
 
     return clusters
 
-def get_Umap(matrix:np.array, name:str = '',save_loc: str = ''):
+def get_Umap(matrix:np.array, study_map:list= None, name:str = '',save_loc: str = '', title:str = 'UMAP projection of the dataset'):
     # UMAP plotting
     reducer = umap.UMAP()
     scaled_data = StandardScaler().fit_transform(matrix)
     embedding = reducer.fit_transform(scaled_data)
-
-    plt.scatter(
+    if study_map is None:
+        plt.scatter(
         embedding[:, 0],
         embedding[:, 1]
         )
+    else:
+        colors = cm.rainbow(np.linspace(0, 1, study_map[-1]+1))
+        for num, emb in enumerate(embedding):
+            plt.scatter(
+                emb[0],
+                emb[1]
+                , color=colors[study_map[num]])
     plt.gca().set_aspect('equal', 'datalim')
-    plt.title('UMAP projection of the dataset', fontsize=24)
-    plt.savefig(save_loc+"/umap"+name+".svg")
+    plt.title(title, fontsize=24)
+    plt.savefig(save_loc+'/umap'+name+'.svg')
+    plt.close()
 
 def normalize(arr, t_min, t_max):
     norm_arr = []
@@ -104,33 +114,33 @@ def normalize_2d(matrix):
 def plot_sim_matrix(matrix:np.array,indices:list,chromosomes:list, name:str = '', save_loc: str = ''):
     # Plotting similarity matrix
     for i,c in enumerate(indices):
-        print("plottin sim matrix", i)
+        print('plottin sim matrix', i)
         min = indices[i]
         try:
             max = indices[i+1]
         except:
             max = len(matrix)
-        print("starting similarity")
+        print('starting similarity')
         # Step 1: Compute pairwise cosine similarity
         similarity_matrix = cosine_similarity(matrix[min:max])
-        print("starting plot")
+        print('starting plot')
         plt.imshow(similarity_matrix, cmap='hot', interpolation='nearest')
         plt.colorbar()
         plt.savefig(save_loc+'/sim_matrix/sim_'+str(chromosomes[i])+'_matrix'+name+'.svg')
         plt.close()
-        print("finished plot")
+        print('finished plot')
 
         # louvain_clustering(similarity_matrix)
 
     similarity_matrix = cosine_similarity(matrix)
-    print("saving similarity_matrix")
-    np.save(save_loc+"sim_matrix.pny",similarity_matrix)
-    print("starting final plot")
+    print('saving similarity_matrix')
+    np.save(save_loc+'sim_matrix.pny',similarity_matrix)
+    print('starting final plot')
     # plt.imshow(similarity_matrix, cmap='hot', interpolation='none')
     # plt.colorbar()
     # plt.savefig(save_loc+'/sim_matrix/sim_matrix'+name+'.svg')
     # plt.close()
-    print("done with final sim plot")
+    print('done with final sim plot')
 
 def apply_KNN_impute(df:pd.DataFrame,n_neighbors: int):
     imputer = KNNImputer(n_neighbors=n_neighbors)
@@ -138,3 +148,9 @@ def apply_KNN_impute(df:pd.DataFrame,n_neighbors: int):
     # Fit and transform the dataset
     df_imputed = pd.DataFrame(imputer.fit_transform(df), columns=df.columns)
     return df_imputed
+
+
+def hierarchical_clustering(data_matrix:np.array):
+    linkage_data = linkage(data_matrix, method='ward', metric='euclidean')
+    dendrogram(linkage_data)
+    plt.savefig("cluster.svg")

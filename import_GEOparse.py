@@ -5,7 +5,7 @@ from helpers import get_geo_list, mapping
 
 path = '/tudelft.net/staff-umbrella/AT GE Datasets/'
 
-store = 'df_nan/'
+store = 'df_new/'
 
 geo_list = get_geo_list('data_addresses.csv')
 df = pd.read_csv('genes_list.csv', index_col=0)
@@ -18,7 +18,7 @@ for number,geo in enumerate(geo_list):
     print('stating ', number, geo)
     try:
         # time.sleep(5)
-        gse = GEOparse.get_GEO(geo=geo, destdir=path + 'data_',silent=True)
+        gse = GEOparse.get_GEO(geo=geo, destdir=path + 'data1',silent=True)
 
         key = list(gse.gpls)
         key = key[0]
@@ -37,7 +37,7 @@ for number,geo in enumerate(geo_list):
             in_df['ID_REF'] = in_df['ID_REF'].map(probe_to_gene_map)
             # How to drop the numbers
             in_df = in_df.dropna()
-            gsm_id = gsm_name+'_'+str(number)
+            gsm_id = gsm_name+'_'+gse.metadata['type']+'_'+str(number)
             in_df.rename(columns={'VALUE': gsm_id}, inplace=True)
             in_df.set_index('ID_REF',inplace = True)
             # we take only the arabidopsis thaliana genges

@@ -154,3 +154,4 @@ cython_debug/
 /df
 /df_no_nan
 *.svg
+/data1
