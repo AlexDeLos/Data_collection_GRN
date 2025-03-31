@@ -4,7 +4,7 @@ import pandas as pd
 from helpers import get_geo_list, mapping
 
 path = '/tudelft.net/staff-umbrella/AT GE Datasets/'
-
+# path = ''
 store = 'df_new/'
 
 geo_list = get_geo_list('data_addresses.csv')
@@ -17,15 +17,22 @@ duplicate_count = {}
 for number,geo in enumerate(geo_list):
     print('stating ', number, geo)
     try:
-        # time.sleep(5)
-        gse = GEOparse.get_GEO(geo=geo, destdir=path + 'imported_data',silent=True)
+        # File not found -> GSE76827,GSE46524, GSE22107, GSE119383
+        # EOFError -> GSE5622,GSE5620,GSE46205, GSE46208, GSE16474
+        try:
+            gse =GEOparse.get_GEO(geo=geo, destdir=path + 'data',silent=True)
+        except FileNotFoundError as err:
+            print(err)
+        except EOFError as err:
+            print(err)
+
 
         key = list(gse.gpls)
         key = key[0]
         gpl_table=gse.gpls[key].table
         try:
             probe_to_gene_map = dict(zip(gpl_table['ID'], gpl_table['ORF'].map(mapping)))
-        except Exception as error:
+        except KeyError as error:
             print('---- ERROR MAKING MAP ----')
             print(error)
             continue
@@ -37,7 +44,7 @@ for number,geo in enumerate(geo_list):
             in_df['ID_REF'] = in_df['ID_REF'].map(probe_to_gene_map)
             # How to drop the numbers
             in_df = in_df.dropna()
-            gsm_id = gsm_name+'_'+gse.metadata['type']+'_'+str(number)
+            gsm_id = gsm_name+'_'+str(gse.metadata['type'])+'_'+str(number)
             in_df.rename(columns={'VALUE': gsm_id}, inplace=True)
             in_df.set_index('ID_REF',inplace = True)
             # we take only the arabidopsis thaliana genges
@@ -74,8 +81,7 @@ for number,geo in enumerate(geo_list):
                 print(error)
                 pass
     
-    except FileNotFoundError as err:
-        raise err
+
     except Exception as error:
         print(error)
         print('-----An error occured, probably an empty dataframe')
