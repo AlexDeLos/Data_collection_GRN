@@ -93,7 +93,7 @@ for number,geo in enumerate(geo_list):
 df.to_csv(path + store +'df_last.csv')
 df = pd.DataFrame(index=df.index)
 
-
+print("should eb saved in ", path + store)
 #! For now we ignore GPLs
 # print()
 # print('GPL example:')
