@@ -133,7 +133,7 @@ print('plotting sim matrix, impute')
 impute_matrix = df_impute.to_numpy()
 plot_sim_matrix(impute_matrix,indices,chromosomes,'_impute',save_loc=out_path)
 print('plotting UMAP, impute')
-get_Umap(impute_matrix.T,name='_samples_impute',study_map=study_map,save_loc=out_path, title='Samples coloured by study (No impute)')
+get_Umap(impute_matrix.T,name='_samples_impute',study_map=study_map,save_loc=out_path, title='Samples coloured by study (impute)')
 get_Umap(impute_matrix,name='_genes_impute',save_loc=out_path, title='Gene expression clusters (Impute)')
 
 f  = plt.figure()
