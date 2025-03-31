@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.special import softmax
-from inmoose.pycombat import pycombat_norm
+# from inmoose.pycombat import pycombat_norm
 
 from helpers import get_first_indexs,plot_sim_matrix,get_Umap, normalize_2d,apply_KNN_impute,hierarchical_clustering
 
