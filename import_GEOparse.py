@@ -18,7 +18,7 @@ for number,geo in enumerate(geo_list):
     print('stating ', number, geo)
     try:
         # time.sleep(5)
-        gse = GEOparse.get_GEO(geo=geo, destdir=path + 'imported_data_test',silent=True)
+        gse = GEOparse.get_GEO(geo=geo, destdir=path + 'imported_data',silent=True)
 
         key = list(gse.gpls)
         key = key[0]
