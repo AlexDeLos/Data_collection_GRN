@@ -73,7 +73,9 @@ for number,geo in enumerate(geo_list):
             except Exception as error:
                 print(error)
                 pass
-            
+    
+    except FileNotFoundError as err:
+        raise err
     except Exception as error:
         print(error)
         print('-----An error occured, probably an empty dataframe')
