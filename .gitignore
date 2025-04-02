@@ -156,3 +156,5 @@ cython_debug/
 *.svg
 /data1
 /df_new
+/df_processed
+*.npy

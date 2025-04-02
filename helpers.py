@@ -86,7 +86,7 @@ def get_Umap(matrix:np.array, study_map:list= None, name:str = '',save_loc: str 
         embedding[:, 1]
         )
     else:
-        colors = cm.rainbow(np.linspace(0, 1, study_map[-1]+1))
+        colors = cm.rainbow(np.linspace(0, 1, max(study_map)+1))
         for num, emb in enumerate(embedding):
             plt.scatter(
                 emb[0],
