@@ -13,11 +13,11 @@ from helpers import get_first_indexs,plot_sim_matrix,get_Umap, normalize_2d,appl
 plot_nan = True
 
 # Get CSV files list from a folder
-path = '/tudelft.net/staff-umbrella/AT GE Datasets/processed_data'
-out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/figures'
+# path = '/tudelft.net/staff-umbrella/AT GE Datasets/processed_data'
+# out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/figures'
 
-# path = 'df_processed'
-# out_path = 'figures'
+path = 'df_processed'
+out_path = 'figures'
 try:
     filtered_df = pd.read_csv(path+'/filter.csv', index_col=0)
     print('succesfully loaded data')
@@ -148,9 +148,12 @@ except FileNotFoundError:
 # plt.savefig(out_path+'/box_plot_pre.svg')
 # plt.close()
 
-study_map = list(map(get_study,df_impute.columns))
-df_corrected = pycombat_norm(df_impute, study_map) #! TODO: this needs the nans removed before we can run it. maybe run impute before or out this before the mapping
-df_corrected.to_csv(path+'/corrected.csv')
+try:
+    df_corrected = pd.read_csv(path+'/corrected.csv')
+except FileNotFoundError:
+    study_map = list(map(get_study,df_impute.columns))
+    df_corrected = pycombat_norm(df_impute, study_map) #! TODO: this needs the nans removed before we can run it. maybe run impute before or out this before the mapping
+    df_corrected.to_csv(path+'/corrected.csv')
 
 normalized_df = (df_corrected - df_corrected.min()) / (df_corrected.max() - df_corrected.min())
 
@@ -164,30 +167,28 @@ matrices = [normalized_df.to_numpy(),standardized_df.to_numpy(),robust_df.to_num
 
 
 for i,mat in enumerate(matrices):
-    print('starting plot')
-    plt.imshow(mat, cmap='hot')
-    plt.colorbar()
-    plt.savefig(out_path+'/impute_matrix'+str(i)+'.svg')
+#     print('starting plot')
+#     # plt.imshow(mat, cmap='hot')
+#     # plt.colorbar()
+#     # plt.savefig(out_path+'/impute_matrix'+str(i)+'.svg')
+#     # plt.close()
+#     plt.hist(mat,bins=1000 )
+#     plt.savefig(out_path+'/histo_'+str(i)+'.svg')
+#     plt.close()
+    impute_matrix = mat
+    plt.boxplot(df_corrected)
+    plt.savefig(out_path+'/box_plot_post'+str(i)+'.svg')
     plt.close()
-    plt.hist(mat,bins=1000 )
-    plt.savefig(out_path+'/histo_'+str(i)+'.svg')
-    plt.close()
+
+    print('plotting sim matrix, impute')
+    plot_sim_matrix(impute_matrix,indices,chromosomes,'_impute'+str(i)+'_',save_loc=out_path)
+    print('plotting UMAP, impute')
+    get_Umap(impute_matrix.T,name='_samples_impute_'+str(i)+'_',study_map=study_map,save_loc=out_path, title='Samples coloured by study (impute)')
+    get_Umap(impute_matrix,name='_genes_impute_'+str(i)+'_',save_loc=out_path, title='Gene expression clusters (Impute)')
 
 
-impute_matrix = df_corrected.to_numpy()
-plt.boxplot(df_corrected)
-plt.savefig(out_path+'/box_plot_post.svg')
-plt.close()
-
-print('plotting sim matrix, impute')
-plot_sim_matrix(impute_matrix,indices,chromosomes,'_impute',save_loc=out_path)
-print('plotting UMAP, impute')
-get_Umap(impute_matrix.T,name='_samples_impute',study_map=study_map,save_loc=out_path, title='Samples coloured by study (impute)')
-get_Umap(impute_matrix,name='_genes_impute',save_loc=out_path, title='Gene expression clusters (Impute)')
-
-
-hierarchical_clustering(impute_matrix)
-print('Done')
+    hierarchical_clustering(impute_matrix)
+    print('Done')
 
 
 
