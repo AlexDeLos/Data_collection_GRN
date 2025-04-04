@@ -5,6 +5,8 @@ import networkx as nx
 import community
 import matplotlib.pyplot as plt
 import umap
+import os
+import math
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.impute import KNNImputer
@@ -146,11 +148,43 @@ def apply_KNN_impute(df:pd.DataFrame,n_neighbors: int):
     imputer = KNNImputer(n_neighbors=n_neighbors)
 
     # Fit and transform the dataset
-    df_imputed = pd.DataFrame(imputer.fit_transform(df), columns=df.columns)
+    df_imputed = pd.DataFrame(imputer.fit_transform(df), columns=df.columns, index=df.index)
     return df_imputed
 
 
-def hierarchical_clustering(data_matrix:np.array):
+def hierarchical_clustering(data_matrix:np.array, path:str, name:str):
     linkage_data = linkage(data_matrix, method='ward', metric='euclidean')
     dendrogram(linkage_data)
-    plt.savefig("cluster.svg")
+    plt.savefig(path+'/cluster_'+name+'.svg')
+
+
+def box_plot(df: pd.DataFrame, cols_per_plot:int, out_path: str, group:int = 0):
+    num_cols = len(df.columns)
+    num_plots = math.ceil(num_cols / cols_per_plot)  # Calculate number of plots needed
+    # Create directory for this group
+    plot_path = os.path.join(out_path, f'boxplot_group_{group}')
+    os.makedirs(plot_path, exist_ok=True)  # exist_ok prevents errors if dir exists
+
+    for plot_num in range(num_plots):
+        # Calculate start and end column indices for this plot
+        start_idx = plot_num * cols_per_plot
+        end_idx = min((plot_num + 1) * cols_per_plot, num_cols)
+        
+        
+        # Create figure with appropriate size
+        plt.figure(figsize=(20, 10))  # Adjust size as needed
+        
+        # Get columns for this plot and create boxplot
+        current_cols = df.iloc[:, start_idx:end_idx]
+        plt.boxplot(current_cols, labels=current_cols.columns)
+        
+        # Rotate x-axis labels for better readability
+        plt.xticks(rotation=45, ha='right')
+        
+        # Add title and adjust layout
+        plt.title(f'Boxplot Group {plot_num + 1} (Columns {start_idx + 1}-{end_idx})')
+        plt.tight_layout()  # Prevents label cutoff
+        
+        # Save and close
+        plt.savefig(os.path.join(plot_path, f'boxplot_group_{plot_num + 1}.png'))
+        plt.close()

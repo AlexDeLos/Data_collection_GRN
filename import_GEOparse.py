@@ -86,10 +86,12 @@ for number,geo in enumerate(geo_list):
         print(error)
         print('-----An error occured, probably an empty dataframe')
         
-    if number %10 == 0 and number != 0:
-        df.to_csv(path + store +'df_'+str(number)+'.csv')
-        df = pd.DataFrame(index=df.index)
+    # if number %10 == 0 and number != 0:
+    #     df.to_csv(path + store +'df_'+str(number)+'.csv')
+    #     df = pd.DataFrame(index=df.index)
     
+
+print("Saving in ", path + store)
 df.to_csv(path + store +'df_last.csv')
 df = pd.DataFrame(index=df.index)
 

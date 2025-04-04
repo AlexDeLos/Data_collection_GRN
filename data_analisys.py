@@ -2,15 +2,16 @@ import glob
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.special import softmax
+import os
+import math
 from inmoose.pycombat import pycombat_norm
 from sklearn.preprocessing import RobustScaler
 
-from helpers import get_first_indexs,plot_sim_matrix,get_Umap, normalize_2d,apply_KNN_impute,hierarchical_clustering
+from helpers import get_first_indexs,plot_sim_matrix,get_Umap, apply_KNN_impute,hierarchical_clustering,box_plot
 
 
 
-plot_nan = True
+plot_nan = False
 
 # Get CSV files list from a folder
 # path = '/tudelft.net/staff-umbrella/AT GE Datasets/processed_data'
@@ -79,12 +80,12 @@ if plot_nan:
     plt.close()
     
     for i,c in enumerate(indices):
-        min = indices[i]
+        min_var = indices[i]
         try:
             max_var = indices[i+1]
         except:
             max_var = len(matrix)
-        plt.bar(range(len(row_nan_count.index[min:max_var])),row_nan_count.values[min:max_var])
+        plt.bar(range(len(row_nan_count.index[min_var:max_var])),row_nan_count.values[min_var:max_var])
         plt.ylim(0,1850)
         plt.xlabel('Genes')
         plt.ylabel('Missing number of data points')
@@ -104,7 +105,6 @@ np.nan_to_num(matrix,copy=False)
 print('nans filled with 0')
 
 
-matrix = big_df.to_numpy()
 
 def get_study(sample: str):
     return int(sample.split('_')[-1])
@@ -112,20 +112,22 @@ study_map = list(map(get_study,big_df.columns))
 
 def get_method(sample: str):
     return str(sample.split('_')[1])
-methods = set(map(get_method,big_df.columns))
 
+if True:
+    matrix = big_df.to_numpy()
 
-print('plotting UMAP')
-get_Umap(matrix.T,name='_samples',study_map=study_map,save_loc=out_path, title='Samples coloured by study (No impute)')
-get_Umap(matrix,name='_genes',save_loc=out_path, title='Gene expression clusters (No impute)')
+    methods = set(map(get_method,big_df.columns))
+    print('plotting UMAP')
+    get_Umap(matrix.T,name='_samples',study_map=study_map,save_loc=out_path, title='Samples coloured by study (No impute)')
+    get_Umap(matrix,name='_genes',save_loc=out_path, title='Gene expression clusters (No impute)')
+    matrix = None
 
 
 # With KNN impute
 
 # here the matrix veriable needs to be reset 
 #! Reset matrix
-matrix = None
-big_df = big_df.loc[:, ~(big_df > 1000).any()]
+# big_df = big_df.loc[:, ~(big_df > 1000).any()]
 # KNN Impute
 try: 
     print('reading file from: ' + path+'/imputed.csv')
@@ -147,13 +149,15 @@ except FileNotFoundError:
 # plt.boxplot(df_impute)
 # plt.savefig(out_path+'/box_plot_pre.svg')
 # plt.close()
+box_plot(df_impute,100, out_path+'/box_uncorrected_plots/')
 
 try:
-    df_corrected = pd.read_csv(path+'/corrected.csv')
+    df_corrected = pd.read_csv(path+'/corrected.csv',index_col=0)
 except FileNotFoundError:
     study_map = list(map(get_study,df_impute.columns))
     df_corrected = pycombat_norm(df_impute, study_map) #! TODO: this needs the nans removed before we can run it. maybe run impute before or out this before the mapping
     df_corrected.to_csv(path+'/corrected.csv')
+box_plot(df_corrected,100, out_path+'/box_corrected_plots/')
 
 normalized_df = (df_corrected - df_corrected.min()) / (df_corrected.max() - df_corrected.min())
 
@@ -162,38 +166,28 @@ standardized_df = (df_corrected - df_corrected.mean()) / df_corrected.std()
 scaler = RobustScaler()
 robust_df = pd.DataFrame(scaler.fit_transform(df_corrected), columns=df_corrected.columns)
 
-matrices = [normalized_df.to_numpy(),standardized_df.to_numpy(),robust_df.to_numpy()]
+print('Saving normalized:')
+normalized_df.to_csv(path+'/normalized.csv')
+standardized_df.to_csv(path+'/standardized.csv')
+robust_df.to_csv(path+'/robust.csv')
+
+normalized_dfs = [normalized_df,standardized_df,robust_df]
 
 
 
-for i,mat in enumerate(matrices):
-#     print('starting plot')
-#     # plt.imshow(mat, cmap='hot')
-#     # plt.colorbar()
-#     # plt.savefig(out_path+'/impute_matrix'+str(i)+'.svg')
-#     # plt.close()
-#     plt.hist(mat,bins=1000 )
-#     plt.savefig(out_path+'/histo_'+str(i)+'.svg')
-#     plt.close()
-    impute_matrix = mat
-    plt.boxplot(df_corrected)
-    plt.savefig(out_path+'/box_plot_post'+str(i)+'.svg')
-    plt.close()
-
+for i,normalized_df_entry in enumerate(normalized_dfs):
+    impute_matrix = normalized_df_entry.to_numpy()
+    box_plot(normalized_df_entry,100, out_path+'/box_norm_plots/', group=i)
     print('plotting sim matrix, impute')
-    plot_sim_matrix(impute_matrix,indices,chromosomes,'_impute'+str(i)+'_',save_loc=out_path)
+    plot_sim_matrix(impute_matrix,indices,chromosomes,'_impute_'+str(i),save_loc=out_path)
     print('plotting UMAP, impute')
     get_Umap(impute_matrix.T,name='_samples_impute_'+str(i)+'_',study_map=study_map,save_loc=out_path, title='Samples coloured by study (impute)')
     get_Umap(impute_matrix,name='_genes_impute_'+str(i)+'_',save_loc=out_path, title='Gene expression clusters (Impute)')
 
 
-    hierarchical_clustering(impute_matrix)
-    print('Done')
+    hierarchical_clustering(impute_matrix,path=out_path, name=str(i))
 
-
-
-
-
+print('Done')
 
 # get pair wise similar
 
