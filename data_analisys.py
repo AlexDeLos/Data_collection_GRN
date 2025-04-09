@@ -16,7 +16,7 @@ plot_simMatrix = True
 
 # Get CSV files list from a folder
 path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_local/df'
-out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/figures_full'
+out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/figures'
 
 norm_dic = {
     0: 'Nromalize',
