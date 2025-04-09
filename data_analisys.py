@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # from inmoose.pycombat import pycombat_norm
 from sklearn.preprocessing import RobustScaler
 
-from helpers import get_first_indexs,plot_sim_matrix,get_Umap, apply_KNN_impute,hierarchical_clustering,box_plot
+from helpers import get_first_indexs,plot_sim_matrix,get_Umap, apply_KNN_impute,hierarchical_clustering_plot,box_plot
 
 
 
@@ -184,7 +184,7 @@ except FileNotFoundError:
     # df_corrected = pycombat_norm(df_impute, study_map) #! TODO: this needs the nans removed before we can run it. maybe run impute before or out this before the mapping
     # df_corrected.to_csv(path+'/corrected.csv')
 
-hierarchical_clustering(df_corrected,path=out_path, name='CorrectedS')
+hierarchical_clustering_plot(df_corrected,path=out_path, name='CorrectedS')
 
 if plot_boxPlots:
     box_plot(df_corrected,100, out_path+'/box_corrected_plots/')
@@ -228,6 +228,6 @@ for i,normalized_df_entry in enumerate(normalized_dfs):
         get_Umap(norm_matrix.T,name='_samples_final_'+norm_dic[i]+'_',study_map=study_map,save_loc=out_path, title='Samples coloured by study ('+norm_dic[i]+')')
 
 
-    hierarchical_clustering(norm_matrix,path=out_path, name=norm_dic[i])
+    hierarchical_clustering_plot(norm_matrix,path=out_path, name=norm_dic[i])
 
 print('Done')
