@@ -9,10 +9,10 @@ from helpers import get_first_indexs,plot_sim_matrix,get_Umap, apply_KNN_impute,
 
 
 
-plot_nan = False
-plot_Umap = False
-plot_boxPlots = False
-plot_simMatrix = False
+plot_nan = True
+plot_Umap = True
+plot_boxPlots = True
+plot_simMatrix = True
 
 # Get CSV files list from a folder
 path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_local'
