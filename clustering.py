@@ -31,8 +31,13 @@ def hierarchical_clustering_with_colinearity(df, threshold=0.9):
     
     return clusters
 path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_local/df/'
-name= 'corrected.csv'
+name= 'robust.csv'
 data = pd.read_csv(path+name, index_col=0)
 clusters = hierarchical_clustering_with_colinearity(data.T)
 data['cluster'] = clusters
-data.to_csv(path+'clustered.csv')
+data.to_csv(path+'clustered_robust.csv')
+
+
+# df_clust = pd.read_csv('df/clustered.csv', index_col=0)
+
+# x= 0
