@@ -156,9 +156,9 @@ def apply_KNN_impute(df:pd.DataFrame,n_neighbors: int):
 
 
 def hierarchical_clustering(data_matrix:np.array, path:str, name:str):
-    linkage_data = linkage(data_matrix, method='ward', metric='euclidean')
+    linkage_data = linkage(data_matrix, method='ward', metric='euclidean', optimal_ordering=True)
     dendrogram(linkage_data, no_labels= True)
-    plt.savefig(path+'/cluster_'+name+'.svg')
+    plt.savefig(path+'/cluster_ordered_'+name+'.svg')
     plt.close()
 
 
