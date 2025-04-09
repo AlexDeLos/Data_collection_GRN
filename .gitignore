@@ -159,3 +159,5 @@ cython_debug/
 /df_processed
 *.npy
 /figures
+/figures_new
+/figures_new_2

@@ -113,8 +113,14 @@ def normalize_2d(matrix):
     matrix = matrix/norm  # normalized matrix
     return matrix
 
-def plot_sim_matrix(matrix:np.array,indices:list,chromosomes:list, name:str = '', save_loc: str = ''):
+def plot_sim_matrix(matrix:np.array,indices:list=None,chromosomes:list=None, name:str = '', save_loc: str = '', title:str= ''):
     # Plotting similarity matrix
+    folder = 'Genes/'
+    if indices is None:
+        indices = [0]
+        folder = 'Samples/'
+    if chromosomes is None:
+        chromosomes = ['']
     for i,c in enumerate(indices):
         print('plottin sim matrix', i)
         min = indices[i]
@@ -128,20 +134,17 @@ def plot_sim_matrix(matrix:np.array,indices:list,chromosomes:list, name:str = ''
         print('starting plot')
         plt.imshow(similarity_matrix, cmap='hot', interpolation='nearest')
         plt.colorbar()
-        plt.savefig(save_loc+'/sim_matrix/sim_'+str(chromosomes[i])+'_matrix'+name+'.svg')
+        plt.title(title)
+        plt.savefig(save_loc+'/sim_matrix/'+folder+'sim_'+str(chromosomes[i])+'_matrix'+name+'.svg')
         plt.close()
         print('finished plot')
 
-        # louvain_clustering(similarity_matrix)
+    plt.close()
 
     similarity_matrix = cosine_similarity(matrix)
     print('saving similarity_matrix')
-    np.save(save_loc+'sim_matrix.pny',similarity_matrix)
+    # np.save(save_loc+'sim_matrix.pny',similarity_matrix)
     print('starting final plot')
-    # plt.imshow(similarity_matrix, cmap='hot', interpolation='none')
-    # plt.colorbar()
-    # plt.savefig(save_loc+'/sim_matrix/sim_matrix'+name+'.svg')
-    # plt.close()
     print('done with final sim plot')
 
 def apply_KNN_impute(df:pd.DataFrame,n_neighbors: int):
@@ -153,9 +156,10 @@ def apply_KNN_impute(df:pd.DataFrame,n_neighbors: int):
 
 
 def hierarchical_clustering(data_matrix:np.array, path:str, name:str):
-    linkage_data = linkage(data_matrix, method='ward', metric='euclidean')
-    dendrogram(linkage_data)
+    linkage_data = linkage(data_matrix, method='ward', metric='euclidean', optimal_ordering=True)
+    dendrogram(linkage_data, no_labels= True)
     plt.savefig(path+'/cluster_'+name+'.svg')
+    plt.close()
 
 
 def box_plot(df: pd.DataFrame, cols_per_plot:int, out_path: str, group:int = 0):

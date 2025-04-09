@@ -2,9 +2,7 @@ import glob
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import os
-import math
-from inmoose.pycombat import pycombat_norm
+# from inmoose.pycombat import pycombat_norm
 from sklearn.preprocessing import RobustScaler
 
 from helpers import get_first_indexs,plot_sim_matrix,get_Umap, apply_KNN_impute,hierarchical_clustering,box_plot
@@ -12,18 +10,27 @@ from helpers import get_first_indexs,plot_sim_matrix,get_Umap, apply_KNN_impute,
 
 
 plot_nan = False
+plot_Umap = False
+plot_boxPlots = False
+plot_simMatrix = False
 
 # Get CSV files list from a folder
-# path = '/tudelft.net/staff-umbrella/AT GE Datasets/processed_data'
-# out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/figures'
+path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_local'
+out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/figures_full'
 
-path = 'df_processed'
-out_path = 'figures'
+norm_dic = {
+    0: 'Nromalize',
+    1: 'Stardardize',
+    2: 'Robust'
+}
+
+# path = 'df'
+# out_path = 'figures'
 try:
     filtered_df = pd.read_csv(path+'/filter.csv', index_col=0)
     print('succesfully loaded data')
 except:
-    csv_files = glob.glob(path + '/*.csv')
+    csv_files = glob.glob(path + '/df*')
 
     # Read each CSV file into DataFrame
     # This creates a list of dataframes
@@ -62,6 +69,20 @@ except:
 
 print('data loaded')
 big_df = filtered_df
+
+#! Remove columns from the datafram
+#TODO: static
+# big_df.loc[:, ~(big_df > 1000000).any()]
+big_df = big_df.filter(regex=r'^(?!.*GSM463683).*$')
+big_df = big_df.filter(regex=r'^(?!.*GSM463684).*$')
+big_df = big_df.filter(regex=r'^(?!.*GSM463685).*$')
+big_df = big_df.filter(regex=r'^(?!.*GSM463686).*$')
+big_df = big_df.filter(regex=r'^(?!.*GSM463687).*$')
+big_df = big_df.filter(regex=r'^(?!.*GSM463688).*$')
+big_df = big_df.filter(regex=r'^(?!.*GSM463689).*$')
+big_df = big_df.filter(regex=r'^(?!.*GSM463690).*$')
+
+
 print(big_df.head)
 
 matrix = big_df.to_numpy()
@@ -113,7 +134,7 @@ study_map = list(map(get_study,big_df.columns))
 def get_method(sample: str):
     return str(sample.split('_')[1])
 
-if True:
+if plot_Umap:
     matrix = big_df.to_numpy()
 
     methods = set(map(get_method,big_df.columns))
@@ -149,15 +170,33 @@ except FileNotFoundError:
 # plt.boxplot(df_impute)
 # plt.savefig(out_path+'/box_plot_pre.svg')
 # plt.close()
-box_plot(df_impute,100, out_path+'/box_uncorrected_plots/')
+if plot_boxPlots:
+    box_plot(df_impute,100, out_path+'/box_uncorrected_plots/')
+if plot_Umap:
+    get_Umap(df_impute.to_numpy().T,name='_samples_impute',study_map=study_map,save_loc=out_path, title='Samples coloured by study')
+    get_Umap(df_impute.to_numpy(),name='_genes_impute',save_loc=out_path, title='Gene expression clusters')
 
 try:
     df_corrected = pd.read_csv(path+'/corrected.csv',index_col=0)
 except FileNotFoundError:
     study_map = list(map(get_study,df_impute.columns))
-    df_corrected = pycombat_norm(df_impute, study_map) #! TODO: this needs the nans removed before we can run it. maybe run impute before or out this before the mapping
-    df_corrected.to_csv(path+'/corrected.csv')
-box_plot(df_corrected,100, out_path+'/box_corrected_plots/')
+    raise ValueError("Running in the cluster")
+    # df_corrected = pycombat_norm(df_impute, study_map) #! TODO: this needs the nans removed before we can run it. maybe run impute before or out this before the mapping
+    # df_corrected.to_csv(path+'/corrected.csv')
+
+hierarchical_clustering(df_corrected,path=out_path, name='CorrectedS')
+
+if plot_boxPlots:
+    box_plot(df_corrected,100, out_path+'/box_corrected_plots/')
+if plot_Umap:
+    get_Umap(df_corrected.to_numpy().T,name='_samples_impute_corrected',study_map=study_map,save_loc=out_path, title='Samples coloured by study')
+    get_Umap(df_corrected.to_numpy(),name='_genes_impute_corrected',save_loc=out_path, title='Gene expression clusters')
+
+if plot_simMatrix:
+    plot_sim_matrix(df_impute,indices,chromosomes,name='_Gene_impute_no_correction',save_loc=out_path,title='Gen Sim (Not Corrected)')
+    plot_sim_matrix(df_impute.T,name='_Sample_impute_no_correction',save_loc=out_path,title='Sample Sim (Not Corrected)')
+    plot_sim_matrix(df_corrected,indices,chromosomes,name='_Gene_impute_corrected(No_norm)',save_loc=out_path,title='Gene Sim (Corrected)')
+    plot_sim_matrix(df_corrected.T,name='_Sample_impute_corrected(No_norm)',save_loc=out_path,title='Sample Sim (Corrected)')
 
 normalized_df = (df_corrected - df_corrected.min()) / (df_corrected.max() - df_corrected.min())
 
@@ -174,21 +213,21 @@ robust_df.to_csv(path+'/robust.csv')
 normalized_dfs = [normalized_df,standardized_df,robust_df]
 
 
-
 for i,normalized_df_entry in enumerate(normalized_dfs):
-    impute_matrix = normalized_df_entry.to_numpy()
-    box_plot(normalized_df_entry,100, out_path+'/box_norm_plots/', group=i)
-    print('plotting sim matrix, impute')
-    plot_sim_matrix(impute_matrix,indices,chromosomes,'_impute_'+str(i),save_loc=out_path)
-    print('plotting UMAP, impute')
-    get_Umap(impute_matrix.T,name='_samples_impute_'+str(i)+'_',study_map=study_map,save_loc=out_path, title='Samples coloured by study (impute)')
-    get_Umap(impute_matrix,name='_genes_impute_'+str(i)+'_',save_loc=out_path, title='Gene expression clusters (Impute)')
+    norm_matrix = normalized_df_entry.to_numpy()
+    if plot_boxPlots:
+        box_plot(normalized_df_entry,100, out_path+'/box_norm_plots/', group=i)
+    if plot_simMatrix:
+        print('plotting sim matrix, impute')
+        plot_sim_matrix(norm_matrix,indices,chromosomes,name='_Gene_impute_'+norm_dic[i],save_loc=out_path, title='Gene Sim ('+norm_dic[i]+')')
+        plot_sim_matrix(norm_matrix.T,name='_Sample_impute_'+norm_dic[i],save_loc=out_path, title='Sample Sim ('+norm_dic[i]+')')
+
+    if plot_Umap:
+        print('plotting UMAP, impute')
+        get_Umap(norm_matrix,name='_genes_final_'+norm_dic[i]+'_',save_loc=out_path, title='Gene expression clusters ('+norm_dic[i]+')')
+        get_Umap(norm_matrix.T,name='_samples_final_'+norm_dic[i]+'_',study_map=study_map,save_loc=out_path, title='Samples coloured by study ('+norm_dic[i]+')')
 
 
-    hierarchical_clustering(impute_matrix,path=out_path, name=str(i))
+    hierarchical_clustering(norm_matrix,path=out_path, name=norm_dic[i])
 
 print('Done')
-
-# get pair wise similar
-
-
