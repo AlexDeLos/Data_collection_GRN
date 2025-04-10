@@ -57,7 +57,7 @@ def get_study(sample: str):
 study_map = list(map(get_study,cluster_means.columns))
 
 print("starting plotting plot_sim_matrix 1")
-plot_sim_matrix(cluster_means,name='clustered', save_loc=out_path, title= 'Data full sim mat (clustered)')
+# plot_sim_matrix(cluster_means,name='clustered', save_loc=out_path, title= 'Data full sim mat (clustered)')
 print("starting plotting get_Umap 1")
 get_Umap(cluster_means,name='_genes',study_map=study_map,save_loc=out_path, title='Gene expressions (clustered)')
 print("starting plotting get_Umap 2")
