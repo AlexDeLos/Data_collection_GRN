@@ -32,17 +32,19 @@ def hierarchical_clustering_with_colinearity(df, threshold=0.9):
     return clusters
 
 path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_local/df/'
+# path = 'df/'
 name= 'corrected.csv'
 out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/figures/clustered'
-
+# out_path = 'figures/clustered'
 try:
     print('reading')
+    raise FileNotFoundError
     cluster_means = pd.read_csv(path+'averaged_clusters_'+name, index_col=0)
 except FileNotFoundError as e:
     print(e)
     print('trying again')
     data = pd.read_csv(path+name, index_col=0)
-    clusters = hierarchical_clustering_with_colinearity(data.T)
+    clusters = hierarchical_clustering_with_colinearity(data.T,threshold = 0.75)
     data['cluster'] = clusters
     data.to_csv(path+'clustered_'+name)
     df_clust = pd.read_csv(path+'clustered_'+name, index_col=0)
@@ -52,6 +54,7 @@ except FileNotFoundError as e:
     # Save the averaged clusters
     cluster_means.to_csv(path+'averaged_clusters_'+name)
 
+
 def get_study(sample: str):
     return int(sample.split('_')[-1])
 study_map = list(map(get_study,cluster_means.columns))
@@ -59,8 +62,8 @@ study_map = list(map(get_study,cluster_means.columns))
 print("starting plotting plot_sim_matrix 1")
 # plot_sim_matrix(cluster_means,name='clustered', save_loc=out_path, title= 'Data full sim mat (clustered)')
 print("starting plotting get_Umap 1")
-get_Umap(cluster_means,name='_genes',study_map=study_map,save_loc=out_path, title='Gene expressions (clustered)')
+get_Umap(cluster_means.to_numpy(),name='_genes',save_loc=out_path, title='Gene expressions (clustered)')
 print("starting plotting get_Umap 2")
-get_Umap(cluster_means.T,name='_samples',study_map=study_map,save_loc=out_path, title='Samples coloured by study (clustered)')
+get_Umap(cluster_means.to_numpy().T,name='_samples',study_map=study_map,save_loc=out_path, title='Samples coloured by study (clustered)')
 print("starting plotting plot_sim_matrix 2")
-plot_sim_matrix(cluster_means.T,name='_Sample_impute_no_correction',save_loc=out_path,title='Samples full sim mat (clustered)')
+plot_sim_matrix(cluster_means.to_numpy().T,name='_Sample_impute_no_correction',save_loc=out_path,title='Samples full sim mat (clustered)')
