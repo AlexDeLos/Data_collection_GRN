@@ -35,21 +35,23 @@ path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_local/df/'
 name= 'corrected.csv'
 out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/figures/clustered'
 
+try:
+    cluster_means = pd.read_csv(path+'averaged_clusters_'+name)
+except:
+    data = pd.read_csv(path+name, index_col=0)
+    clusters = hierarchical_clustering_with_colinearity(data.T)
+    data['cluster'] = clusters
+    data.to_csv(path+'clustered_'+name)
 
-data = pd.read_csv(path+name, index_col=0)
-clusters = hierarchical_clustering_with_colinearity(data.T)
-data['cluster'] = clusters
-data.to_csv(path+'clustered_'+name)
+
+    df_clust = pd.read_csv(path+'clustered_'+name, index_col=0)
 
 
-df_clust = pd.read_csv(path+'clustered_'+name, index_col=0)
+    # Group by cluster and take the mean of each cluster
+    cluster_means = df_clust.groupby('cluster').mean()
 
-
-# Group by cluster and take the mean of each cluster
-cluster_means = df_clust.groupby('cluster').mean()
-
-# Save the averaged clusters
-cluster_means.to_csv(path+'averaged_clusters_'+name)
+    # Save the averaged clusters
+    cluster_means.to_csv(path+'averaged_clusters_'+name)
 
 def get_study(sample: str):
     return int(sample.split('_')[-1])

@@ -140,11 +140,6 @@ def plot_sim_matrix(matrix:np.array,indices:list=None,chromosomes:list=None, nam
         print('finished plot')
 
     plt.close()
-
-    similarity_matrix = cosine_similarity(matrix)
-    print('saving similarity_matrix')
-    # np.save(save_loc+'sim_matrix.pny',similarity_matrix)
-    print('starting final plot')
     print('done with final sim plot')
 
 def apply_KNN_impute(df:pd.DataFrame,n_neighbors: int):
