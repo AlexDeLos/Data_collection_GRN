@@ -135,7 +135,7 @@ def plot_sim_matrix(matrix:np.array,indices:list=None,chromosomes:list=None, nam
         plt.imshow(similarity_matrix, cmap='hot', interpolation='nearest')
         plt.colorbar()
         plt.title(title)
-        plt.savefig(save_loc+'/sim_matrix/'+folder+'sim_'+str(chromosomes[i])+'_matrix'+name+'.svg')
+        plt.savefig(save_loc+'/sim_matrix/'+folder+'sim_'+str(chromosomes[i])+'_matrix'+name+'.png')
         plt.close()
         print('finished plot')
 

@@ -45,11 +45,7 @@ except FileNotFoundError as e:
     clusters = hierarchical_clustering_with_colinearity(data.T)
     data['cluster'] = clusters
     data.to_csv(path+'clustered_'+name)
-
-
     df_clust = pd.read_csv(path+'clustered_'+name, index_col=0)
-
-
     # Group by cluster and take the mean of each cluster
     cluster_means = df_clust.groupby('cluster').mean()
 
