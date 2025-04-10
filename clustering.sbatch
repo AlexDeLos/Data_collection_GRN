@@ -10,7 +10,7 @@
 
 #SBATCH --ntasks=1
 
-#SBATCH --cpus-per-task=2
+#SBATCH --cpus-per-task=1
 
 #SBATCH --mem=24G
 
