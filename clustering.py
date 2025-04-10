@@ -36,8 +36,11 @@ name= 'corrected.csv'
 out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/figures/clustered'
 
 try:
+    print('reading')
     cluster_means = pd.read_csv(path+'averaged_clusters_'+name, index_col=0)
-except:
+except FileNotFoundError as e:
+    print(e)
+    print('trying again')
     data = pd.read_csv(path+name, index_col=0)
     clusters = hierarchical_clustering_with_colinearity(data.T)
     data['cluster'] = clusters
