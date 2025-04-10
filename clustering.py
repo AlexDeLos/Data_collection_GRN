@@ -36,7 +36,7 @@ name= 'corrected.csv'
 out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/figures/clustered'
 
 try:
-    cluster_means = pd.read_csv(path+'averaged_clusters_'+name)
+    cluster_means = pd.read_csv(path+'averaged_clusters_'+name, index_col=0)
 except:
     data = pd.read_csv(path+name, index_col=0)
     clusters = hierarchical_clustering_with_colinearity(data.T)
