@@ -1,8 +1,8 @@
 import pandas as pd
 from scipy.cluster.hierarchy import linkage, fcluster
-from scipy.spatial.distance import pdist, squareform
-from scipy.stats import pearsonr
+from scipy.spatial.distance import squareform
 import numpy as np  
+from helpers import plot_sim_matrix,get_Umap, apply_KNN_impute,hierarchical_clustering_plot,box_plot
 
 def hierarchical_clustering_with_colinearity(df, threshold=0.9):
     """
@@ -30,14 +30,36 @@ def hierarchical_clustering_with_colinearity(df, threshold=0.9):
     clusters = fcluster(Z, 1 - threshold, criterion='distance')
     
     return clusters
+
 path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_local/df/'
-name= 'robust.csv'
+name= 'corrected.csv'
+out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/figures/clustered'
+
+
 data = pd.read_csv(path+name, index_col=0)
 clusters = hierarchical_clustering_with_colinearity(data.T)
 data['cluster'] = clusters
-data.to_csv(path+'clustered_robust.csv')
+data.to_csv(path+'clustered_'+name)
 
 
-# df_clust = pd.read_csv('df/clustered.csv', index_col=0)
+df_clust = pd.read_csv(path+'clustered_'+name, index_col=0)
 
-# x= 0
+
+# Group by cluster and take the mean of each cluster
+cluster_means = df_clust.groupby('cluster').mean()
+
+# Save the averaged clusters
+cluster_means.to_csv(path+'averaged_clusters_'+name)
+
+def get_study(sample: str):
+    return int(sample.split('_')[-1])
+study_map = list(map(get_study,cluster_means.columns))
+
+print("starting plotting plot_sim_matrix 1")
+plot_sim_matrix(cluster_means,name='clustered', save_loc=out_path, title= 'Data full sim mat (clustered)')
+print("starting plotting get_Umap 1")
+get_Umap(cluster_means,name='_genes',study_map=study_map,save_loc=out_path, title='Gene expressions (clustered)')
+print("starting plotting get_Umap 2")
+get_Umap(cluster_means.T,name='_samples',study_map=study_map,save_loc=out_path, title='Samples coloured by study (clustered)')
+print("starting plotting plot_sim_matrix 2")
+plot_sim_matrix(cluster_means.T,name='_Sample_impute_no_correction',save_loc=out_path,title='Samples full sim mat (clustered)')
