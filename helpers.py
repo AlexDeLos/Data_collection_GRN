@@ -77,27 +77,53 @@ def louvain_clustering(similarity_matrix, threshold=0.8):
 
     return clusters
 
-def get_Umap(matrix:np.array, study_map:list= None, name:str = '',save_loc: str = '', title:str = 'UMAP projection of the dataset'):
-    # UMAP plotting
+def get_Umap(matrix: np.array, study_map: list = None, name: str = '',
+             save_loc: str = '', title: str = 'UMAP projection of the dataset'):
+    """
+    Generate and save UMAP projection plot, creating directories if needed.
+    
+    Args:
+        matrix: Input data matrix
+        study_map: List of labels for coloring points (optional)
+        name: Additional identifier for output filename
+        save_loc: Directory to save the plot
+        title: Plot title
+    """
+    # Create directory if it doesn't exist
+    os.makedirs(save_loc, exist_ok=True)
+    
+    # Perform UMAP transformation
     reducer = umap.UMAP()
     scaled_data = StandardScaler().fit_transform(matrix)
     embedding = reducer.fit_transform(scaled_data)
+    
+    # Create plot
+    plt.figure(figsize=(10, 8))
+    
     if study_map is None:
         plt.scatter(
-        embedding[:, 0],
-        embedding[:, 1]
+            embedding[:, 0],
+            embedding[:, 1]
         )
     else:
         colors = cm.rainbow(np.linspace(0, 1, max(study_map)+1))
         for num, emb in enumerate(embedding):
             plt.scatter(
                 emb[0],
-                emb[1]
-                , color=colors[study_map[num]])
+                emb[1],
+                color=colors[study_map[num]]
+            )
+    
     plt.gca().set_aspect('equal', 'datalim')
     plt.title(title, fontsize=24)
-    plt.savefig(save_loc+'/umap'+name+'.svg')
+    
+    # Construct save path and save figure
+    output_path = os.path.join(save_loc, f'umap{name}.svg')
+    plt.savefig(output_path, format='svg', bbox_inches='tight')
     plt.close()
+    
+    print(f"UMAP plot saved to: {output_path}")
+
 
 def normalize(arr, t_min, t_max):
     norm_arr = []
@@ -113,34 +139,58 @@ def normalize_2d(matrix):
     matrix = matrix/norm  # normalized matrix
     return matrix
 
-def plot_sim_matrix(matrix:np.array,indices:list=None,chromosomes:list=None, name:str = '', save_loc: str = '', title:str= ''):
-    # Plotting similarity matrix
+def plot_sim_matrix(matrix: np.array, indices: list = None, chromosomes: list = None, 
+                   name: str = '', save_loc: str = '', title: str = ''):
+    """
+    Plot similarity matrix and save to specified location, creating directories if needed.
+    
+    Args:
+        matrix: Input data matrix
+        indices: List of indices to split the matrix
+        chromosomes: List of chromosome names for labeling
+        name: Additional name identifier for output file
+        save_loc: Base directory to save outputs
+        title: Plot title
+    """
+    # Determine folder structure
     folder = 'Genes/'
     if indices is None:
         indices = [0]
         folder = 'Samples/'
+
     if chromosomes is None:
         chromosomes = ['']
-    for i,c in enumerate(indices):
-        print('plottin sim matrix', i)
-        min = indices[i]
+
+    # Create directories if they don't exist
+    output_dir = os.path.join(save_loc, 'sim_matrix', folder)
+    os.makedirs(output_dir, exist_ok=True)
+
+    for i, c in enumerate(indices):
+        print('Plotting sim matrix', i)
+        min_idx = indices[i]
         try:
-            max = indices[i+1]
-        except:
-            max = len(matrix)
-        print('starting similarity')
-        # Step 1: Compute pairwise cosine similarity
-        similarity_matrix = cosine_similarity(matrix[min:max])
-        print('starting plot')
+            max_idx = indices[i+1]
+        except IndexError:
+            max_idx = len(matrix)
+        
+        print('Computing similarity')
+        # Compute pairwise cosine similarity
+        similarity_matrix = cosine_similarity(matrix[min_idx:max_idx])
+        
+        print('Creating plot')
         plt.imshow(similarity_matrix, cmap='hot', interpolation='nearest')
         plt.colorbar()
         plt.title(title)
-        plt.savefig(save_loc+'/sim_matrix/'+folder+'sim_'+str(chromosomes[i])+'_matrix'+name+'.png')
+        
+        # Construct output path
+        output_path = os.path.join(output_dir, f'sim_{chromosomes[i]}_matrix{name}.svg')
+        plt.savefig(output_path)
         plt.close()
-        print('finished plot')
+        print(f'Finished plot saved to {output_path}')
 
     plt.close()
-    print('done with final sim plot')
+    print('Done with all similarity plots')
+
 
 def apply_KNN_impute(df:pd.DataFrame,n_neighbors: int):
     imputer = KNNImputer(n_neighbors=n_neighbors)
