@@ -36,7 +36,7 @@ path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_local/df/'
 names = ['corrected','robust','standardized']
 out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/clustered_figures'
 # out_path = 'clustered_figures'
-th_list = [0.9,0.8,0.7,0.6,0.5]
+th_list = [0.9,0.8,0.7]
 for name in names:
     for th in th_list:
         try:
