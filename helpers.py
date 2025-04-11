@@ -122,7 +122,7 @@ def get_Umap(matrix: np.array, study_map: list = None, name: str = '',
     plt.savefig(output_path, format='svg', bbox_inches='tight')
     plt.close()
     
-    print(f"UMAP plot saved to: {output_path}")
+    # print(f"UMAP plot saved to: {output_path}")
 
 
 def normalize(arr, t_min, t_max):
@@ -166,18 +166,18 @@ def plot_sim_matrix(matrix: np.array, indices: list = None, chromosomes: list = 
     os.makedirs(output_dir, exist_ok=True)
 
     for i, c in enumerate(indices):
-        print('Plotting sim matrix', i)
+        # print('Plotting sim matrix', i)
         min_idx = indices[i]
         try:
             max_idx = indices[i+1]
         except IndexError:
             max_idx = len(matrix)
         
-        print('Computing similarity')
+        # print('Computing similarity')
         # Compute pairwise cosine similarity
         similarity_matrix = cosine_similarity(matrix[min_idx:max_idx])
         
-        print('Creating plot')
+        # print('Creating plot')
         plt.imshow(similarity_matrix, cmap='hot', interpolation='nearest')
         plt.colorbar()
         plt.title(title)
@@ -186,10 +186,10 @@ def plot_sim_matrix(matrix: np.array, indices: list = None, chromosomes: list = 
         output_path = os.path.join(output_dir, f'sim_{chromosomes[i]}_matrix{name}.svg')
         plt.savefig(output_path)
         plt.close()
-        print(f'Finished plot saved to {output_path}')
+        # print(f'Finished plot saved to {output_path}')
 
     plt.close()
-    print('Done with all similarity plots')
+    # print('Done with all similarity plots')
 
 
 def apply_KNN_impute(df:pd.DataFrame,n_neighbors: int):

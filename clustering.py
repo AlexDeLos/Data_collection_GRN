@@ -2,7 +2,7 @@ import pandas as pd
 from scipy.cluster.hierarchy import linkage, fcluster
 from scipy.spatial.distance import squareform
 import numpy as np  
-from helpers import plot_sim_matrix,get_Umap, apply_KNN_impute,hierarchical_clustering_plot,box_plot
+from helpers import plot_sim_matrix,get_Umap
 
 def hierarchical_clustering_with_colinearity(df, threshold=0.9):
     """
@@ -31,13 +31,14 @@ def hierarchical_clustering_with_colinearity(df, threshold=0.9):
     
     return clusters
 
-path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_local/df/'
-# path = 'df/'
+# path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_local/df/'
+path = 'df/'
 names = ['corrected','robust','standardized']
-out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/clustered_figures'
-# out_path = 'clustered_figures'
-th_list = [0.9,0.8,0.7]
+# out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/clustered_figures'
+out_path = 'clustered_figures'
+th_list = [0.9,0.8,0.75]
 for name in names:
+    print('Starting:', name)
     for th in th_list:
         try:
             print('reading')
@@ -51,9 +52,10 @@ for name in names:
             # df_clust = pd.read_csv(path+'clustered_'+name+'_'+str(th), index_col=0)
             # Group by cluster and take the mean of each cluster
             cluster_means = data.groupby('cluster').mean()
-            print('For theshold ',th, 'we found ', len(cluster_means),' clusters')
             # Save the averaged clusters
             cluster_means.to_csv(path+'averaged_clustered_'+str(th)+'_'+name+'.csv')
+        
+        print('For theshold ',th, 'we found ', len(cluster_means),' clusters')
 
 
         def get_study(sample: str):
