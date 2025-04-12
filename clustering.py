@@ -31,11 +31,11 @@ def hierarchical_clustering_with_colinearity(df, threshold=0.9):
     
     return clusters
 
-# path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_local/df/'
-path = 'df/'
+path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_local/df/'
+# path = 'df/'
 names = ['corrected','robust','standardized']
-# out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/clustered_figures'
-out_path = 'clustered_figures'
+out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/clustered_figures'
+# out_path = 'clustered_figures'
 th_list = [0.9,0.8,0.75]
 for name in names:
     print('Starting:', name)
