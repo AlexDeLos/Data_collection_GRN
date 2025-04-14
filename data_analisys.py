@@ -3,23 +3,28 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 # from inmoose.pycombat import pycombat_norm
+import os
 from sklearn.preprocessing import RobustScaler
 
 from helpers import get_first_indexs,plot_sim_matrix,get_Umap, apply_KNN_impute,hierarchical_clustering_plot,box_plot
 
 
 
-plot_nan = False
-plot_Umap = False
+plot_nan = True
+plot_Umap = True
 plot_boxPlots = True
-plot_simMatrix = False
+plot_simMatrix = True
 
 # Get CSV files list from a folder
 path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_local/df'
-out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/figures'
+out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/figures_final'
 
 path = 'df'
-out_path = 'figures_2'
+out_path = 'figures_final'
+
+# Create directory if it doesn't exist
+os.makedirs(out_path, exist_ok=True)
+
 
 norm_dic = {
     0: 'Stardardize',
@@ -95,13 +100,14 @@ indices:list[int] = get_first_indexs(big_df.index,chromosomes)
 
 if plot_nan:
     row_nan_count = big_df.isna().sum(axis=1)
-    filter_row = big_df.isna().sum(axis=1)>1000
     col_nan_count = big_df.isna().sum(axis=0)
     
     plt.imshow(matrix_nan, cmap='hot', interpolation='nearest')
     plt.savefig(out_path+'/matrix.svg')
     plt.close()
-    
+    # Create directory if it doesn't exist
+    os.makedirs(out_path+'/row', exist_ok=True)
+    os.makedirs(out_path+'/col', exist_ok=True)
     for i,c in enumerate(indices):
         min_var = indices[i]
         try:
