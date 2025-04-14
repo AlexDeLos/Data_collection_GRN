@@ -11,17 +11,19 @@ from helpers import get_first_indexs,plot_sim_matrix,get_Umap, apply_KNN_impute,
 
 plot_nan = False
 plot_Umap = False
-plot_boxPlots = False
+plot_boxPlots = True
 plot_simMatrix = False
 
 # Get CSV files list from a folder
 path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_local/df'
 out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/figures'
 
+path = 'df'
+out_path = 'figures_2'
+
 norm_dic = {
-    0: 'Nromalize',
-    1: 'Stardardize',
-    2: 'Robust'
+    0: 'Stardardize',
+    1: 'Robust'
 }
 
 # path = 'df'
@@ -165,11 +167,6 @@ except FileNotFoundError:
 # NORMALIZE
 #? Apply batch correction
 
-# https://inmoose.readthedocs.io/en/latest/pycombatnorm.html
-# pycombat_norm
-# plt.boxplot(df_impute)
-# plt.savefig(out_path+'/box_plot_pre.svg')
-# plt.close()
 if plot_boxPlots:
     box_plot(df_impute,100, out_path+'/box_uncorrected_plots/')
 if plot_Umap:
@@ -184,7 +181,9 @@ except FileNotFoundError:
     # df_corrected = pycombat_norm(df_impute, study_map) #! TODO: this needs the nans removed before we can run it. maybe run impute before or out this before the mapping
     # df_corrected.to_csv(path+'/corrected.csv')
 
-hierarchical_clustering_plot(df_corrected,path=out_path, name='CorrectedS')
+
+
+# hierarchical_clustering_plot(df_corrected,path=out_path, name='Corrected')
 
 if plot_boxPlots:
     box_plot(df_corrected,100, out_path+'/box_corrected_plots/')
@@ -198,7 +197,7 @@ if plot_simMatrix:
     plot_sim_matrix(df_corrected,indices,chromosomes,name='_Gene_impute_corrected(No_norm)',save_loc=out_path,title='Gene Sim (Corrected)')
     plot_sim_matrix(df_corrected.T,name='_Sample_impute_corrected(No_norm)',save_loc=out_path,title='Sample Sim (Corrected)')
 
-normalized_df = (df_corrected - df_corrected.min()) / (df_corrected.max() - df_corrected.min())
+# normalized_df = (df_corrected - df_corrected.min()) / (df_corrected.max() - df_corrected.min())
 
 standardized_df = (df_corrected - df_corrected.mean()) / df_corrected.std()
 
@@ -206,12 +205,20 @@ scaler = RobustScaler()
 robust_df = pd.DataFrame(scaler.fit_transform(df_corrected), columns=df_corrected.columns)
 
 print('Saving normalized:')
-normalized_df.to_csv(path+'/normalized.csv')
+# normalized_df.to_csv(path+'/normalized.csv')
 standardized_df.to_csv(path+'/standardized.csv')
 robust_df.to_csv(path+'/robust.csv')
 
-normalized_dfs = [normalized_df,standardized_df,robust_df]
+normalized_dfs = [standardized_df,robust_df]
 
+for i,normalized_df_entry in enumerate(normalized_dfs):
+    #plot the matrix
+    plt.figure(figsize=(100, 100))  # Adjust width & height as needed
+    plt.imshow(normalized_df_entry, cmap='hot', interpolation='none')  # 'none' removes blurring
+    plt.axis('off')  # Optional: removes axes for cleaner output
+    plt.colorbar()
+    plt.savefig(out_path + '/large_pixels_matrix'+norm_dic[i]+'.svg', dpi=300, bbox_inches='tight')
+    plt.close()
 
 for i,normalized_df_entry in enumerate(normalized_dfs):
     norm_matrix = normalized_df_entry.to_numpy()
