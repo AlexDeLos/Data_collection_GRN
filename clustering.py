@@ -39,7 +39,7 @@ path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_local/df/'
 out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/clustered_figures2'
 # out_path = 'clustered_figures'
 
-
+print('starting')
 names = ['corrected','robust','standardized']
 chromosomes = ['1','2','3','4','5']
 th_list = [0.9,0.8,0.75]
