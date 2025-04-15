@@ -88,9 +88,6 @@ big_df = big_df.filter(regex=r'^(?!.*GSM463688).*$')
 big_df = big_df.filter(regex=r'^(?!.*GSM463689).*$')
 big_df = big_df.filter(regex=r'^(?!.*GSM463690).*$')
 
-
-print(big_df.head)
-
 matrix = big_df.to_numpy()
 matrix_nan = big_df.isna().to_numpy()
 
