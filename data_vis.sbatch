@@ -24,4 +24,6 @@ conda activate alex_env
 
 echo "Starting data vis"
 python3 data_analisys.py
+echo "Starting clustering"
+python3 clustering.py
 echo "---DONE"

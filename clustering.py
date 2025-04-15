@@ -35,10 +35,10 @@ def get_study(sample: str):
     return int(sample.split('_')[-1])
 
 
-path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_local/df/'
-path = 'df/'
-out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/clustered_figures2'
-out_path = 'clustered_figures'
+path = '/tudelft.net/staff-umbrella/AT GE Datasets/processed_final'
+# path = 'df/'
+out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/clustered_figures_final'
+# out_path = 'clustered_figures'
 
 print('starting')
 names = ['corrected','robust','standardized']
