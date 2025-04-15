@@ -3,6 +3,7 @@ from scipy.cluster.hierarchy import linkage, fcluster
 from scipy.spatial.distance import squareform
 import numpy as np  
 from helpers import plot_sim_matrix,get_Umap
+import seaborn
 
 def hierarchical_clustering_with_colinearity(df, threshold=0.9):
     """
@@ -35,15 +36,19 @@ def get_study(sample: str):
 
 
 path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_local/df/'
-# path = 'df/'
+path = 'df/'
 out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/clustered_figures2'
-# out_path = 'clustered_figures'
+out_path = 'clustered_figures'
 
 print('starting')
 names = ['corrected','robust','standardized']
 chromosomes = ['1','2','3','4','5']
 th_list = [0.9,0.8,0.75]
+
+
 for name in names:
+    data = pd.read_csv(path+name+'.csv', index_col=0)
+    seaborn.clustermap(data.to_numpy(),figsize=(50,50))
     print('Starting:', name)
     for th in th_list:
         print('Starting:', th)
@@ -88,7 +93,6 @@ for name in names:
         plot_sim_matrix(cluster_means,indx,chromosomes,name='_Gene_'+name+'_'+str(th),save_loc=out_path,title='Gen Sim (Not clustered)')
         plot_sim_matrix(df_clust,indx_,chromosomes,name='_Cluster_'+name+'_'+str(th),save_loc=out_path,title='Cluster Sim (Clustered)')
 
-        plot_sim_matrix(cluster_means,name='clustered', save_loc=out_path, title= 'Data full sim mat (clustered)')
         get_Umap(cluster_means.to_numpy(),name='_genes_'+name+'_'+str(th),save_loc=out_path, title='Gene expressions (clustered)')
         get_Umap(cluster_means.to_numpy().T,name='_samples_'+name+'_'+str(th),study_map=study_map,save_loc=out_path, title='Samples coloured by study (clustered)')
         plot_sim_matrix(cluster_means.to_numpy().T,name='_'+name+'_'+str(th),save_loc=out_path,title='Samples full sim mat (clustered)')

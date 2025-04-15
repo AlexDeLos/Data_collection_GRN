@@ -5,7 +5,7 @@ from helpers import get_geo_list, mapping
 
 path = '/tudelft.net/staff-umbrella/AT GE Datasets/'
 # path = ''
-store = 'processed_data_full/'
+store = 'processed_final/'
 
 geo_list = get_geo_list('data_addresses.csv')
 df = pd.read_csv('genes_list.csv', index_col=0)
@@ -20,7 +20,7 @@ for number,geo in enumerate(geo_list):
         # File not found -> GSE76827,GSE46524, GSE22107, GSE119383
         # EOFError -> GSE5622,GSE5620,GSE46205, GSE46208, GSE16474
         try:
-            gse =GEOparse.get_GEO(geo=geo, destdir=path + 'data',silent=True)
+            gse =GEOparse.get_GEO(geo=geo, destdir=path + 'data_final',silent=True)
         except FileNotFoundError as err:
             print(err)
         except EOFError as err:
