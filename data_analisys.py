@@ -16,11 +16,10 @@ plot_boxPlots = True
 plot_simMatrix = True
 
 # Get CSV files list from a folder
-path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_local/df'
+path = '/tudelft.net/staff-umbrella/AT GE Datasets/processed_final'
 out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/figures_final'
-
-path = 'df'
-out_path = 'figures_final'
+# path = 'df'
+# out_path = 'figures_final'
 
 # Create directory if it doesn't exist
 os.makedirs(out_path, exist_ok=True)
