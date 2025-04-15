@@ -35,9 +35,9 @@ def get_study(sample: str):
 
 
 path = '/tudelft.net/staff-umbrella/AT GE Datasets/df_local/df/'
-path = 'df/'
-out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/clustered_figures'
-out_path = 'clustered_figures'
+# path = 'df/'
+out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/clustered_figures2'
+# out_path = 'clustered_figures'
 
 
 names = ['corrected','robust','standardized']
