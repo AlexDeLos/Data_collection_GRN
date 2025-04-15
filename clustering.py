@@ -88,9 +88,9 @@ for name in names:
         plot_sim_matrix(cluster_means,indx,chromosomes,name='_Gene_'+name+'_'+str(th),save_loc=out_path,title='Gen Sim (Not clustered)')
         plot_sim_matrix(df_clust,indx_,chromosomes,name='_Cluster_'+name+'_'+str(th),save_loc=out_path,title='Cluster Sim (Clustered)')
 
-        # plot_sim_matrix(cluster_means,name='clustered', save_loc=out_path, title= 'Data full sim mat (clustered)')
-        # get_Umap(cluster_means.to_numpy(),name='_genes_'+name+'_'+str(th),save_loc=out_path, title='Gene expressions (clustered)')
-        # get_Umap(cluster_means.to_numpy().T,name='_samples_'+name+'_'+str(th),study_map=study_map,save_loc=out_path, title='Samples coloured by study (clustered)')
-        # plot_sim_matrix(cluster_means.to_numpy().T,name='_'+name+'_'+str(th),save_loc=out_path,title='Samples full sim mat (clustered)')
+        plot_sim_matrix(cluster_means,name='clustered', save_loc=out_path, title= 'Data full sim mat (clustered)')
+        get_Umap(cluster_means.to_numpy(),name='_genes_'+name+'_'+str(th),save_loc=out_path, title='Gene expressions (clustered)')
+        get_Umap(cluster_means.to_numpy().T,name='_samples_'+name+'_'+str(th),study_map=study_map,save_loc=out_path, title='Samples coloured by study (clustered)')
+        plot_sim_matrix(cluster_means.to_numpy().T,name='_'+name+'_'+str(th),save_loc=out_path,title='Samples full sim mat (clustered)')
         print("Done plotting")
 
