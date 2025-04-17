@@ -34,7 +34,7 @@ def get_study(sample: str):
     return int(sample.split('_')[-1])
 
 
-path = '/tudelft.net/staff-umbrella/AT GE Datasets/processed_final'
+path = '/tudelft.net/staff-umbrella/AT GE Datasets/processed_final/'
 # path = 'df_final/'
 out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/clustered_figures_final'
 # out_path = 'clustered_figures_1.0'
