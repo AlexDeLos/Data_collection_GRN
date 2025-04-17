@@ -1,7 +1,8 @@
 import pandas as pd
 from scipy.cluster.hierarchy import linkage, fcluster
 from scipy.spatial.distance import squareform
-import numpy as np  
+import scipy.cluster.hierarchy as spc
+import numpy as np
 from helpers import plot_sim_matrix,get_Umap,plot_heat_map
 
 def hierarchical_clustering_with_colinearity(df, threshold=0.9):
@@ -19,17 +20,17 @@ def hierarchical_clustering_with_colinearity(df, threshold=0.9):
     # Calculate pairwise correlation matrix
     corr_matrix = df.corr().values
     
-    # Convert correlation to distance (1 - absolute correlation)
-    distance_matrix = 1 - np.abs(corr_matrix)
-    np.fill_diagonal(distance_matrix, 0)  # set diagonal to 0
-    
+    pdist = spc.distance.pdist(corr_matrix)
+
     # Perform hierarchical clustering
-    Z = linkage(squareform(distance_matrix), method='complete')
+    Z = linkage(pdist, method='complete')
     
     # Determine clusters based on the colinearity threshold
-    clusters = fcluster(Z, 1 - threshold, criterion='distance')
+    clusters = fcluster(Z, (1-threshold) * pdist.max(), criterion='distance')
     
     return clusters
+
+
 def get_study(sample: str):
     return int(sample.split('_')[-1])
 
@@ -42,16 +43,12 @@ out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/clustered_figures_final'
 print('starting')
 names = ['corrected','robust','standardized']
 chromosomes = ['1','2','3','4','5']
-th_list = [0.9,0.8,0.75]
-
-# iris = seaborn.load_dataset("iris")
-# species = iris.pop("species")
-# seaborn.clustermap(iris)
+th_list = [0.9,0.8]
 
 for name in names:
     data = pd.read_csv(path+name+'.csv', index_col=0)
     print('Starting:', name)
-    plot_heat_map(data,out_path,name)
+    # plot_heat_map(data,out_path,name)
     for th in th_list:
         print('Starting:', th)
         try:
