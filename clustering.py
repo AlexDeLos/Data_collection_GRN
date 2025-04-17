@@ -56,6 +56,7 @@ for name in names:
             cluster_means = pd.read_csv(path+'averaged_clustered_'+str(th)+'_'+name+'.csv', index_col=0)
             data = pd.read_csv(path+'clustered_'+str(th)+'_'+name+'.csv', index_col=0)
         except FileNotFoundError as e:
+            print("Creating the data for:",name,th)
             data = pd.read_csv(path+name+'.csv', index_col=0)
             clusters = hierarchical_clustering_with_colinearity(data.T,threshold = th)
             data['cluster'] = clusters
