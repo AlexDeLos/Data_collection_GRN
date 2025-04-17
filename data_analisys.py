@@ -16,6 +16,8 @@ plot_boxPlots = True
 plot_simMatrix = True
 run_first = False
 
+no_change = True
+
 # Get CSV files list from a folder
 path = '/tudelft.net/staff-umbrella/AT GE Datasets/processed_final'
 out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/figures_final'
@@ -36,7 +38,9 @@ norm_dic = {
 try:
     filtered_df = pd.read_csv(path+'/filter.csv', index_col=0)
     print('succesfully loaded data')
-except:
+except FileNotFoundError:
+    if no_change:
+        raise FileNotFoundError
     csv_files = glob.glob(path + '/df*')
 
     # Read each CSV file into DataFrame
@@ -154,6 +158,8 @@ try:
     print('reading file from: ' + path+'/imputed.csv')
     df_impute = pd.read_csv(path+'/imputed.csv', index_col=0)
 except FileNotFoundError:
+    if no_change:
+        raise FileNotFoundError
     print('Could not read file, running KNN impute')
     df_impute = apply_KNN_impute(big_df,5)
     print('KNN impute ran, saving file')
@@ -174,6 +180,8 @@ if run_first:
 try:
     df_corrected = pd.read_csv(path+'/corrected.csv',index_col=0)
 except FileNotFoundError:
+    if no_change:
+        raise FileNotFoundError
     study_map = list(map(get_study,df_impute.columns))
     raise ValueError("Running in the cluster")
     # df_corrected = pycombat_norm(df_impute, study_map) #! TODO: this needs the nans removed before we can run it. maybe run impute before or out this before the mapping
@@ -198,12 +206,16 @@ if run_first:
 try:
     standardized_df = pd.read_csv(path+'/standardized.csv', index_col=0)
 except FileNotFoundError:
+    if no_change:
+        raise FileNotFoundError
     standardized_df = (df_corrected - df_corrected.mean()) / df_corrected.std()
     standardized_df.to_csv(path+'/standardized.csv')
 
 try:
     robust_df = pd.read_csv(path+'/robust.csv', index_col=0)
 except FileNotFoundError:
+    if no_change:
+        raise FileNotFoundError
     scaler = RobustScaler()
     robust_df = pd.DataFrame(scaler.fit_transform(df_corrected), columns=df_corrected.columns)
     robust_df.to_csv(path+'/robust.csv')
