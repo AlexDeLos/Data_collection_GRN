@@ -219,7 +219,7 @@ for i,normalized_df_entry in enumerate(normalized_dfs):
     plt.imshow(normalized_df_entry, cmap='hot', interpolation='none')  # 'none' removes blurring
     plt.axis('off')  # Optional: removes axes for cleaner output
     plt.colorbar()
-    plt.savefig(out_path + '/large_pixels_matrix'+norm_dic[i]+'.svg', dpi=300, bbox_inches='tight')
+    plt.savefig(out_path + '/large_pixels_matrix_'+norm_dic[i]+'.svg', dpi=300, bbox_inches='tight')
     plt.close()
 
 for i,normalized_df_entry in enumerate(normalized_dfs):
@@ -233,8 +233,8 @@ for i,normalized_df_entry in enumerate(normalized_dfs):
 
     if plot_Umap:
         print('plotting UMAP, impute')
-        get_Umap(norm_matrix,name='_genes_final_'+norm_dic[i]+'_',save_loc=out_path, title='Gene expression clusters ('+norm_dic[i]+')')
-        get_Umap(norm_matrix.T,name='_samples_final_'+norm_dic[i]+'_',study_map=study_map,save_loc=out_path, title='Samples coloured by study ('+norm_dic[i]+')')
+        get_Umap(norm_matrix,name='_genes_final_'+norm_dic[i],save_loc=out_path, title='Gene expression clusters ('+norm_dic[i]+')')
+        get_Umap(norm_matrix.T,name='_samples_final_'+norm_dic[i],study_map=study_map,save_loc=out_path, title='Samples coloured by study ('+norm_dic[i]+')')
 
 
     hierarchical_clustering_plot(norm_matrix,path=out_path, name=norm_dic[i])

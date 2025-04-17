@@ -2,8 +2,7 @@ import pandas as pd
 from scipy.cluster.hierarchy import linkage, fcluster
 from scipy.spatial.distance import squareform
 import numpy as np  
-from helpers import plot_sim_matrix,get_Umap
-import seaborn
+from helpers import plot_sim_matrix,get_Umap,plot_heat_map
 
 def hierarchical_clustering_with_colinearity(df, threshold=0.9):
     """
@@ -36,20 +35,23 @@ def get_study(sample: str):
 
 
 path = '/tudelft.net/staff-umbrella/AT GE Datasets/processed_final'
-# path = 'df/'
+# path = 'df_final/'
 out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/clustered_figures_final'
-# out_path = 'clustered_figures'
+# out_path = 'clustered_figures_1.0'
 
 print('starting')
 names = ['corrected','robust','standardized']
 chromosomes = ['1','2','3','4','5']
 th_list = [0.9,0.8,0.75]
 
+# iris = seaborn.load_dataset("iris")
+# species = iris.pop("species")
+# seaborn.clustermap(iris)
 
 for name in names:
     data = pd.read_csv(path+name+'.csv', index_col=0)
-    seaborn.clustermap(data.to_numpy(),figsize=(50,50))
     print('Starting:', name)
+    plot_heat_map(data,out_path,name)
     for th in th_list:
         print('Starting:', th)
         try:
@@ -67,6 +69,7 @@ for name in names:
             cluster_means.to_csv(path+'averaged_clustered_'+str(th)+'_'+name+'.csv')
         df_clust = data
         print('For theshold ',th, 'we found ', len(cluster_means),' clusters')
+
         chunks = len(chromosomes)
         indx = []
         chunck_size = len(cluster_means)//chunks

@@ -12,6 +12,8 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.impute import KNNImputer
 import matplotlib.cm as cm
 from scipy.cluster.hierarchy import dendrogram, linkage
+import seaborn
+import sys
 
 def get_geo_list(path:str):
     read =  pd.read_csv(path)
@@ -191,6 +193,16 @@ def plot_sim_matrix(matrix: np.array, indices: list = None, chromosomes: list = 
     plt.close()
     # print('Done with all similarity plots')
 
+def plot_heat_map(df:pd.DataFrame,save_loc:str, name: str):
+    # Create directories if they don't exist
+    output_dir = os.path.join(save_loc, 'heat_map')
+    os.makedirs(output_dir, exist_ok=True)
+    o = sys.getrecursionlimit()
+    sys.setrecursionlimit(10000)
+    seaborn.clustermap(df)
+    plt.savefig(save_loc+'/'+name+'.png')
+    plt.close()
+    sys.setrecursionlimit(o)
 
 def apply_KNN_impute(df:pd.DataFrame,n_neighbors: int):
     imputer = KNNImputer(n_neighbors=n_neighbors)
