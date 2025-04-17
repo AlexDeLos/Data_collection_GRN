@@ -139,7 +139,7 @@ study_map = list(map(get_study,big_df.columns))
 def get_method(sample: str):
     return str(sample.split('_')[1])
 
-if False:
+if run_first:
     if plot_Umap:
         matrix = big_df.to_numpy()
 
@@ -164,7 +164,7 @@ except FileNotFoundError:
 
 # NORMALIZE
 #? Apply batch correction
-if False:
+if run_first:
     if plot_boxPlots:
         box_plot(df_impute,100, out_path+'/box_uncorrected_plots/')
     if plot_Umap:
@@ -182,7 +182,7 @@ except FileNotFoundError:
 
 
 # hierarchical_clustering_plot(df_corrected,path=out_path, name='Corrected')
-if False:
+if run_first:
     if plot_boxPlots:
         box_plot(df_corrected,100, out_path+'/box_corrected_plots/')
     if plot_Umap:
