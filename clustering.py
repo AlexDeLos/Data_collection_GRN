@@ -42,8 +42,8 @@ out_path = '/tudelft.net/staff-umbrella/AT GE Datasets/clustered_figures_final'
 
 print('starting')
 names = ['corrected','robust','standardized']
-chromosomes = ['1','2','3','4','5']
-th_list = [0.9,0.85,0.8]
+chromosomes = ['a']
+th_list = [0.85,0.8]
 
 for name in names:
     data = pd.read_csv(path+name+'.csv', index_col=0)
